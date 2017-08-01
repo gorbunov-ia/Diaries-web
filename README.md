@@ -1,0 +1,2 @@
+# diaries
+Java server project
