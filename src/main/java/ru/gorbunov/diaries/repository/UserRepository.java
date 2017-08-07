@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 
 import ru.gorbunov.diaries.domain.User;
@@ -10,6 +11,7 @@ import ru.gorbunov.diaries.domain.User;
  */
 public interface UserRepository extends CrudRepository<User, Integer> {
     
-    public User findByLogin(String login);
+    @EntityGraph(attributePaths = "roles")
+    public User findOneByLogin(String login);
     
 }

@@ -1,16 +1,24 @@
 package ru.gorbunov.diaries.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 
 /**
@@ -26,20 +34,30 @@ public class User implements Serializable {
     private Integer id;
         
     @NotNull
+    @Size(min = 3, max = 32)
     @Column(unique = true, nullable = false, length = 32)
     private String login;
     
+    @JsonIgnore
     @NotNull
-    @Column(nullable = false, length = 32)
-    private String pswrd;
+    @Size(min = 60, max = 60)
+    @Column(name = "Pswrd", nullable = false, length = 60)
+    private String password;
     
     @NotNull
     @Email
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false, length = 255)
     private String email;
         
-    private Boolean isActive;
+    private Boolean isActive = true;
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "t_UsersRoles",
+        joinColumns = {@JoinColumn(name = "UserID", referencedColumnName = "ID")},
+        inverseJoinColumns = {@JoinColumn(name = "RoleID", referencedColumnName = "ID")})
+    private Set<Role> roles = new HashSet<>();
+    
     public Integer getId() {
         return id;
     }
@@ -56,12 +74,12 @@ public class User implements Serializable {
         this.login = login;
     }
 
-    public String getPswrd() {
-        return pswrd;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPswrd(String pswrd) {
-        this.pswrd = pswrd;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -80,6 +98,14 @@ public class User implements Serializable {
         this.isActive = isActive;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 3;

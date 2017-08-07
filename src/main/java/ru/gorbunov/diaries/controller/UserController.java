@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping(path = "")
     public ResponseEntity<User> getCurrentUser () {
         //TODO: logs
-        User user = userRepository.findByLogin("viruz");
+        User user = userRepository.findOneByLogin("viruz");
                 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
