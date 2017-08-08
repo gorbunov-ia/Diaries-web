@@ -1,8 +1,8 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,18 +25,17 @@ import javax.validation.constraints.Size;
  * @author Gorbunov.ia
  */
 @Entity
-@Table(name = "t_Notes")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Note implements Serializable {
+@Table(name = "t_NotesElements")
+public class NoteElement implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @JsonIgnore
+    @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)    
-    @JoinColumn(name = "UserID", nullable = false)
-    private User user = null;
+    @JoinColumn(name = "NoteID", nullable = false)
+    private Note note = null;
     
     @NotNull
     @Size(min = 1, max = 64)
@@ -42,6 +43,11 @@ public class Note implements Serializable {
     private String description;
     
     private Integer sortBy = 0;
+    
+    //@Basic(optional = false)
+    @Column(name = "LastModified", nullable = false, insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
 
     public Integer getId() {
         return id;
@@ -51,12 +57,12 @@ public class Note implements Serializable {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Note getNote() {
+        return note;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setNote(Note note) {
+        this.note = note;
     }
 
     public String getDescription() {
@@ -75,10 +81,18 @@ public class Note implements Serializable {
         this.sortBy = sortBy;
     }
 
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
+        int hash = 5;
+        hash = 17 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -93,11 +107,11 @@ public class Note implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Note other = (Note) obj;
+        final NoteElement other = (NoteElement) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
- 
+    
 }
