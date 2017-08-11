@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.repository.NoteRepository;
 
@@ -15,7 +17,7 @@ import ru.gorbunov.diaries.repository.NoteRepository;
  *
  * @author Gorbunov.ia
  */
-@RestController
+@Controller
 @RequestMapping(path = "/notes")
 public class NoteController {
     
@@ -28,10 +30,11 @@ public class NoteController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Note>> getAllNotes() {
-        log.debug("REST request to get Notes for user: ","login");
+    public String getAllNotes(ModelMap model) {
+        log.debug("REST request to get Notes.");
         final List<Note> notes = (List<Note>) noteRepository.findAll();        
-        return new ResponseEntity<>(notes, HttpStatus.OK);
+        model.addAttribute("notes", notes);
+        return "notes";
     }
     
 }
