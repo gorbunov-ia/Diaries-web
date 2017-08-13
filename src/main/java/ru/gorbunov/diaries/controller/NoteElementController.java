@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
+import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
 
 /**
  *
@@ -26,14 +27,17 @@ public class NoteElementController {
     
     private final NoteElementRepository noteElementRepository;
     
-    public NoteElementController (NoteElementRepository repository) {
+    private final NoteElementSpecification noteElementSpecification;
+    
+    public NoteElementController (NoteElementRepository repository, NoteElementSpecification noteElementSpecification) {
         this.noteElementRepository = repository;
+        this.noteElementSpecification = noteElementSpecification;
     }
     
     @GetMapping
     public ResponseEntity<List<NoteElement>> getAllNotes() {
-        log.debug("REST request to get NotesElements for user: ","login");
-        final List<NoteElement> notesElements = (List<NoteElement>) noteElementRepository.findAll();        
+        log.debug("REST request to get NotesElements.");
+        final List<NoteElement> notesElements = noteElementRepository.findAll(noteElementSpecification.byUser());
         return new ResponseEntity<>(notesElements, HttpStatus.OK);
     }    
 }
