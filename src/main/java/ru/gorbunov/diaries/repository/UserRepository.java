@@ -16,4 +16,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @EntityGraph(attributePaths = "roles")
     public User findOneByLogin(String login);
     
+    @EntityGraph(attributePaths = "roles")    
+    @Override
+    public User findOne(Integer id);
+    
 }
