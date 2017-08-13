@@ -36,5 +36,13 @@ public final class NoteSpecification {
         };
     }
 
+    public Specification<Note> byId(Integer id) {
+        return new Specification<Note>() {            
+            @Override
+            public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
+                return cb.equal(root.get("id"), id);
+            }
+        };
+    }
     
 }

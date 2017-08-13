@@ -45,4 +45,13 @@ public final class NoteElementSpecification {
         };
     }
     
+    public Specification<NoteElement> byNote(Integer id) {
+        return new Specification<NoteElement>() {            
+            @Override
+            public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
+                return cb.equal(root.get("note"), id);
+            }
+        };
+    }    
+    
 }

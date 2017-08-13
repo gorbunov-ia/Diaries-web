@@ -5,7 +5,7 @@
         <title>Diaries</title>
     </head>
     <body>
-        <h1>Note description</h1>
+        <h1 th:text="${note.description}">Note description</h1>
         <table border="1">
             <tr th:each="noteElement : ${notesElements}">                
             <td th:text="${noteElement.description}">Description</td>                        
