@@ -8,7 +8,9 @@
         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
         <table border="1">
             <tr th:each="note : ${notes}">                
-            <td th:text="${note.description}">Description</td>                        
+            <td>                
+                <a th:href="@{'/notes-elements/' + ${note.id}}" th:text="${note.description}">Description</a>
+            </td>
             </tr>            
         </table>
     </body>
