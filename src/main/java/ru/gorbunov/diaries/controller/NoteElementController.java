@@ -54,8 +54,9 @@ public class NoteElementController {
         final Note note = noteRepository.findOne(Specifications
                 .where(noteSpecification.byUser())
                 .and(noteSpecification.byId(noteId)));
-        
-        //TODO: not found page
+                
+        if (note == null)
+            throw new ResourceNotFoundException();
         
         final List<NoteElement> notesElements = noteElementRepository.findAll(
                 Specifications
