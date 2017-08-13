@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Diaries</title>
+    </head>
+    <body>
+        <h1>Note description</h1>
+        <table border="1">
+            <tr th:each="noteElement : ${notesElements}">                
+            <td th:text="${noteElement.description}">Description</td>                        
+            </tr>            
+        </table>
+    </body>
+</html>
