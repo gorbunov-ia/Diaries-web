@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.security;
 
+import ru.gorbunov.diaries.exception.UserNotActivatedException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;

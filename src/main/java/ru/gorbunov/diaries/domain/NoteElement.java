@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -45,7 +44,7 @@ public class NoteElement implements Serializable {
     private Integer sortBy = 0;
     
     //@Basic(optional = false)
-    @Column(name = "LastModified", nullable = false, insertable = false, updatable = false)
+    @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
 

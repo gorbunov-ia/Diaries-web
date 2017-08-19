@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.security;
+package ru.gorbunov.diaries.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

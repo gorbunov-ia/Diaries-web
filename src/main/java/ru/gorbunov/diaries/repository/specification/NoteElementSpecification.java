@@ -52,6 +52,24 @@ public final class NoteElementSpecification {
                 return cb.equal(root.get("note"), id);
             }
         };
+    }
+
+    public Specification<NoteElement> byId(Integer id) {
+        return new Specification<NoteElement>() {            
+            @Override
+            public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
+                return cb.equal(root.get("id"), id);
+            }
+        };
     }    
+
+    public Specification<NoteElement> bySortBy(Integer sortBy) {
+        return new Specification<NoteElement>() {            
+            @Override
+            public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
+                return cb.equal(root.get("sortBy"), sortBy);
+            }
+        };
+    }
     
 }

@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.controller;
+package ru.gorbunov.diaries.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
