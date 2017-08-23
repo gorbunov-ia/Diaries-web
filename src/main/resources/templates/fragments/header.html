@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!--
-    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
-    -->
+    <link href="../../../css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{css/bootstrap.min.css}"/>
 </head>
 <body>
-<!--navbar-->
-<nav class="navbar navbar-default" th:fragment="navbar">
-    <div class="container-fluid">    
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#responsive-menu" aria-expanded="false">
-                <span class="sr-only">Открыть навигацию</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>        
-                <span class="icon-bar"></span>
-            </button>      
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="responsive-menu">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="#">Главная <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Заметки</a></li>         
-                <li><a href="#">Вход/Выход</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>	    
+        <!--navbar-->
+        <nav class="navbar navbar-default" th:fragment="navbar">
+            <div class="container-fluid">    
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#responsive-menu" aria-expanded="false">
+                        <span class="sr-only">Открыть навигацию</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>        
+                        <span class="icon-bar"></span>
+                    </button>      
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="responsive-menu">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li th:classappend="${module == 'home' ? 'active' : ''}">
+                            <a href="#" th:href="@{/}">Главная <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li th:classappend="${module == 'notes' ? 'active' : ''}">
+                            <a href="#" th:href="@{/notes}">Заметки</a>
+                        </li>
+                        <li th:if="${#authorization.expression('!isAuthenticated()')}">
+                            <a href="/login" th:href="@{/login}">
+                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;Вход
+                            </a>
+                        </li>
+                        <li th:if="${#authorization.expression('isAuthenticated()')}">
+                            <a href="/login?logout" th:href="@{#}" onclick="$('#form').submit();">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Выход
+                            </a>
+                            <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/login?logout}"></form>
+                        </li>                        
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>	    
 <!--
 <nav class="navbar navbar-inverse navbar-fixed-top" th:fragment="header">
     <div class="container">
