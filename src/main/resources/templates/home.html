@@ -9,13 +9,13 @@
             <!-- and is therefore entirely optional, as this markup fragment will be replaced -->
             <!-- with "fragments/header.html" at runtime.                                     -->
             <!-- ============================================================================ -->
-        </nav>        
-        <h1>Welcome!</h1>
-
-        <p>Click <a th:href="@{/notes}">here</a> to see you diaries.</p>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <h1>Добро пожаловать!</h1>
+                <p>Для просмотра контента необходимо авторизоваться. Сделать это можно следуя панели навигации.</p>				
+            </div>
+        </div>
         <footer th:replace="fragments/footer :: footer">Footer</footer>       
     </body>
 </html>
