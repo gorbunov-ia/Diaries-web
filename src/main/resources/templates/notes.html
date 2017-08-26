@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Diaries</title>
-    </head>
-    <body>
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-        <table border="1">
-            <tr th:each="note : ${notes}">                
-            <td>                
-                <a th:href="@{'/notes-elements/' + ${note.id}}" th:text="${note.description}">Description</a>
-            </td>
-            </tr>            
-        </table>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">    
+    <head th:replace="fragments/head :: head">
+        <title>Fragment will be replaced</title>
+    </head>        
+    <body>        
+        <nav class="navbar navbar-inverse" th:replace="fragments/header :: navbar">
+            <!-- ============================================================================ -->
+            <!-- This content is only used for static prototyping purposes (natural templates)-->
+            <!-- and is therefore entirely optional, as this markup fragment will be replaced -->
+            <!-- with "fragments/header.html" at runtime.                                     -->
+            <!-- ============================================================================ -->
+        </nav>
+        <div class="container">
+            <h1>Список заметок</h1>
+            <div class="list-group">					
+                <a th:each="note : ${notes}" th:href="@{'/notes-elements/' + ${note.id}}" class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-8" th:text="${note.description}">Description</div>
+                        <div class="col-xs-4 text-right" th:text="${#dates.format(note.lastModified, 'dd.MM.yyyy')}">01.08.2017</div>                        
+                    </div>
+                </a>
+            </div>
+        </div>
+        <footer th:replace="fragments/footer :: footer">Footer</footer>       
     </body>
 </html>

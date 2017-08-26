@@ -3,6 +3,7 @@ package ru.gorbunov.diaries.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -42,6 +45,10 @@ public class Note implements Serializable {
     private String description;
     
     private Integer sortBy = 0;
+    
+    @Column(name = "LastModified", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
 
     public Integer getId() {
         return id;
@@ -73,6 +80,14 @@ public class Note implements Serializable {
 
     public void setSortBy(Integer sortBy) {
         this.sortBy = sortBy;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     @Override
