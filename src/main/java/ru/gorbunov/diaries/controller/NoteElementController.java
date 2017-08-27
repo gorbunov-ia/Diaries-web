@@ -82,10 +82,12 @@ public class NoteElementController {
         if (note == null)
             throw new ResourceNotFoundException();
         
-        final List<NoteElement> notesElements = noteElementRepository.findAll(
+        List<NoteElement> notesElements = noteElementRepository.findAll(
                 Specifications
                         .where(noteElementSpecification.byUser())
                         .and(noteElementSpecification.byNote(note.getId())));
+        
+        noteElementService.fillSortElement(notesElements);
         
         model.addAttribute("note", note);
         model.addAttribute("notesElements", notesElements);

@@ -1,13 +1,18 @@
 package ru.gorbunov.diaries.service;
 
-import java.util.Date;
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gorbunov.diaries.controller.vm.SortElementVM;
 
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.SwapElementException;
@@ -85,5 +90,42 @@ public class NoteElementService {
             return null;
         }
     }      
-    
+
+    public void fillSortElement(List<NoteElement> notesElements) {        
+        MutableInt first = new MutableInt();
+        MutableInt last = new MutableInt();
+        int maxSortBy = -1;
+        int minSortBy = -1;
+        for (int i = 0; i < notesElements.size(); i++) {
+            NoteElement element = notesElements.get(i);
+            SortElementVM sort = new SortElementVM();
+            element.setSortElementVm(sort);
+            sort.setFirst(first);
+            sort.setLast(last);
+            if (notesElements.size() == 1) {
+                sort.setPrev(element.getSortBy());
+                sort.setNext(element.getSortBy());
+                minSortBy = element.getSortBy();
+                maxSortBy = element.getSortBy();
+                break;
+            }                            
+            if (i == 0) {
+                sort.setPrev(element.getSortBy());
+                sort.setNext(notesElements.get(i+1).getSortBy());
+            } else if (i == notesElements.size() - 1) {
+                sort.setPrev(notesElements.get(i-1).getSortBy());
+                sort.setNext(element.getSortBy());
+            } else {
+                sort.setPrev(notesElements.get(i-1).getSortBy());
+                sort.setNext(notesElements.get(i+1).getSortBy());
+            }
+            if (element.getSortBy() > maxSortBy || maxSortBy == -1)
+                maxSortBy = element.getSortBy();
+            if (element.getSortBy() < minSortBy || minSortBy == -1)
+                minSortBy = element.getSortBy();
+        }
+        first.setValue(minSortBy);
+        last.setValue(maxSortBy);
+    }
+        
 }

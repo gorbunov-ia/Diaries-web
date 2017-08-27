@@ -15,9 +15,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import ru.gorbunov.diaries.controller.vm.SortElementVM;
 
 /**
  *
@@ -48,6 +51,9 @@ public class NoteElement implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
 
+    @Transient
+    private SortElementVM sortElementVm;
+    
     public Integer getId() {
         return id;
     }
@@ -86,6 +92,14 @@ public class NoteElement implements Serializable {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public SortElementVM getSortElementVm() {
+        return sortElementVm;
+    }
+
+    public void setSortElementVm(SortElementVM sortElementVm) {
+        this.sortElementVm = sortElementVm;
     }
 
     @Override
