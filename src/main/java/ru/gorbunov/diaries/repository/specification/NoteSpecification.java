@@ -28,7 +28,8 @@ public final class NoteSpecification {
                 User user = userService.getUser();
                 
                 if (user != null) {
-                    return cb.equal(root.get("user"), user);
+                    cq.orderBy(cb.desc(root.get("lastModified")));
+                    return cb.equal(root.get("user"), user);                        
                 } else {
                     return cb.disjunction();
                 }                

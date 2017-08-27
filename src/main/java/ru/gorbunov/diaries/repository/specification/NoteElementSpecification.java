@@ -36,7 +36,7 @@ public final class NoteElementSpecification {
                 if (user != null) {
                     
                     final Join<NoteElement, Note> joinNote = root.join("note");
-                    
+                    cq.orderBy(cb.asc(root.get("sortBy")));
                     return cb.equal(joinNote.get("user"), user);
                 } else {
                     return cb.disjunction();
