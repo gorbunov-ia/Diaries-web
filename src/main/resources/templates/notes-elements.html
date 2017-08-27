@@ -44,6 +44,12 @@
                     </div>
 		</li>
             <p>Нажмите <a th:href="@{/notes}">здесь</a> для просмотра списка заметок.</p>              
+            <!--enctype="text/plain"-->
+            <form th:action="@{/notes-elements/swap}" method="post">		
+		<input type="number" name="noteElementId"></input>		
+		<input type="number" name="sortBy"></input>
+		<button type="submit">Отправить</button>
+            </form>
             </div>            
         </div>
         <footer th:replace="fragments/footer :: footer">Footer</footer>       

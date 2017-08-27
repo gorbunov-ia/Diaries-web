@@ -1,33 +1,30 @@
 package ru.gorbunov.diaries.controller;
 
-import ru.gorbunov.diaries.exception.ResourceNotFoundException;
-import java.util.Date;
 import java.util.List;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.controller.vm.SwapElementVM;
-import ru.gorbunov.diaries.exception.SwapElementException;
+import ru.gorbunov.diaries.exception.BadRequestException;
+import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.NoteRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
@@ -96,14 +93,33 @@ public class NoteElementController {
         return "notes-elements";
     }
 
-    @PutMapping("/swap")    
-    public ResponseEntity<String> test(@Valid @RequestBody SwapElementVM swapVM) {
-               
-        if (noteElementService.changeSortBy(swapVM.getNoteElementId(),swapVM.getSortBy())) {
-            return new ResponseEntity<>(HttpStatus.OK);
+/*
+    @PostMapping(value="/swapJson", headers="Content type")    
+    public String swap(@Valid @RequestBody SwapElementVM swapVM) {
+            
+        NoteElement element = noteElementService.changeSortBy(swapVM
+                .getNoteElementId(),swapVM.getSortBy());
+        
+        if (element != null) {
+            return "redirect:/notes-elements/" + element.getNote().getId();
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+            throw new BadRequestException();
+        }        
+    }
+*/    
+
+    @PostMapping(value="/swap")    
+    public String swap(@RequestParam("noteElementId") 
+            Integer noteElementId, @RequestParam("sortBy") Integer sortBy) {
+        
+        NoteElement element = noteElementService.changeSortBy(noteElementId,
+                                                              sortBy);
+        
+        if (element != null) {
+            return "redirect:/notes-elements/" + element.getNote().getId();
+        } else {
+            throw new BadRequestException();
+        }   
     }
     
 }

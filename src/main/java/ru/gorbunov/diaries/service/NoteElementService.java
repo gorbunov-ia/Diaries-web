@@ -46,7 +46,7 @@ public class NoteElementService {
     }    
     
     @Transactional(isolation = Isolation.REPEATABLE_READ , rollbackFor = Exception.class)
-    public Boolean changeSortBy(Integer noteElementId, Integer sortBy) {
+    public NoteElement changeSortBy(Integer noteElementId, Integer sortBy) {
         try {        
             NoteElement noteElement = noteElementRepository.findOne(
                     Specifications
@@ -79,10 +79,10 @@ public class NoteElementService {
             noteElement.setLastModified(new Date());
 
             noteElementRepository.save(noteElement);
-            return true;
+            return noteElement;
         } catch (Exception e) {
             log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
-            return false;
+            return null;
         }
     }      
     
