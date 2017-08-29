@@ -16,41 +16,64 @@
             <div class="list-group">
                 <li class="list-group-item" th:each="noteElement,i : ${notesElements}">
                     <div class="row">
-                        <div class="col-sm-8">
-                            <div class="btn-group">
-				<button class="btn btn-default" th:classappend="${i.first} ? 'disabled' : ''" type="button">
+                        <div th:switch="${i.first}" class="col-sm-8">
+                            <div th:case="true" class="btn-group">
+				<button class="btn btn-default disabled" type="button">
                                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-				</button>
-				<button class="btn btn-default" th:classappend="${i.first} ? 'disabled' : ''" type="button">
+				</button>                                    
+				<button class="btn btn-default disabled" type="button">
                                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>					
 				</button>
-                            </div>				
+                            </div>
+                            <div th:case="false" class="btn-group">
+                                <button class="btn btn-default" type="button" th:onclick="'setForm(' + ${noteElement.id} + ',' + ${noteElement.sortElementVm.first} + ');'">
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+				</button>
+				<button class="btn btn-default" type="button" th:onclick="'setForm(' + ${noteElement.id} + ',' + ${noteElement.sortElementVm.prev} + ');'">
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>					
+				</button>                                
+                            </div>
                             <span th:text="${noteElement.description}">Description</span>
                         </div>											
                         <div class="col-sm-4">
-                            <div class="pull-right" th:inline="text">[[${#dates.format(noteElement.lastModified, 'dd.MM.yyyy')}]]
-                                <div class="btn-group">
-                                    <button class="btn btn-default" th:classappend="${i.last} ? 'disabled' : ''" type="button">
+                            <div th:switch="${i.last}" class="pull-right" th:inline="text">[[${#dates.format(noteElement.lastModified, 'dd.MM.yyyy')}]]
+                                <div th:case="true" class="btn-group">
+                                    <button class="btn btn-default disabled" type="button">
                                         <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                                     </button>
-                                    <button class="btn btn-default" th:classappend="${i.last} ? 'disabled' : ''" type="button">
+                                    <button class="btn btn-default disabled" type="button">
                                         <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                                         <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                                     </button>		
                                 </div>
+                                <div th:case="false" class="btn-group">
+                                    <button class="btn btn-default" type="button" th:onclick="'setForm(' + ${noteElement.id} + ',' + ${noteElement.sortElementVm.next} + ');'">
+                                        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="btn btn-default" type="button" th:onclick="'setForm(' + ${noteElement.id} + ',' + ${noteElement.sortElementVm.last} + ');'">
+                                        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                    </button>		
+                                </div>                                
                             </div>
                         </div>				
                     </div>
-		</li>
-            <p>Нажмите <a th:href="@{/notes}">здесь</a> для просмотра списка заметок.</p>              
-            <!--enctype="text/plain"-->
-            <form th:action="@{/notes-elements/swap}" method="post">		
-		<input type="number" name="noteElementId"></input>		
-		<input type="number" name="sortBy"></input>
+		</li>                     
+            <form id="swapForm" style="visibility: hidden" th:action="@{/notes-elements/swap}" method="post">		
+		<input type="number" name="noteElementId" id="noteElementId"></input>		
+		<input type="number" name="sortBy" id="sortBy"></input>
 		<button type="submit">Отправить</button>
             </form>
             </div>            
+            <script>
+                function setForm(elementId, newSortBy) {			
+                    document.getElementById('noteElementId').value = elementId;
+                    document.getElementById('sortBy').value = newSortBy;
+                    document.getElementById('swapForm').submit();
+                }
+            </script>
         </div>
         <footer th:replace="fragments/footer :: footer">Footer</footer>       
     </body>
