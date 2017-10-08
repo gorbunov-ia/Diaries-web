@@ -41,7 +41,7 @@ public class NoteElement implements Serializable {
     
     @NotNull
     @Size(min = 1, max = 64)
-    @Column(unique = true, nullable = false, length = 64)
+    @Column(nullable = false, length = 64)
     private String description;
     
     private Integer sortBy = 0;
