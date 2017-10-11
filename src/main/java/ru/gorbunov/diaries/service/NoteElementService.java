@@ -124,8 +124,8 @@ public class NoteElementService {
             if (element.getSortBy() < minSortBy || minSortBy == -1)
                 minSortBy = element.getSortBy();
         }
-        first.setValue(minSortBy);
-        last.setValue(maxSortBy);
+        first.setValue(maxSortBy);
+        last.setValue(minSortBy);
     }
         
 }
