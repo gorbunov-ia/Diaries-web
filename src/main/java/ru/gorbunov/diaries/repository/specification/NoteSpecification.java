@@ -18,7 +18,7 @@ public final class NoteSpecification {
     private final UserService userService;
     
     public NoteSpecification(UserService userService) {
-        this.userService = userService;        
+        this.userService = userService;
     }
 
     public Specification<Note> byUser() {
