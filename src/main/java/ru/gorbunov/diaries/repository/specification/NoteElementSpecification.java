@@ -36,7 +36,6 @@ public final class NoteElementSpecification {
                 if (user != null) {
                     
                     final Join<NoteElement, Note> joinNote = root.join("note");
-                    cq.orderBy(cb.desc(root.get("sortBy")));
                     return cb.equal(joinNote.get("user"), user);
                 } else {
                     return cb.disjunction();
@@ -68,6 +67,31 @@ public final class NoteElementSpecification {
             @Override
             public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
                 return cb.equal(root.get("sortBy"), sortBy);
+            }
+        };
+    }
+
+
+    public Specification<NoteElement> byRangeSortBy(Integer sortByFirst, Integer sortByLast) {
+        return new Specification<NoteElement>() {
+            @Override
+            public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                return cb.and(cb.greaterThanOrEqualTo(root.get("sortBy"), sortByFirst),
+                        cb.lessThanOrEqualTo(root.get("sortBy"), sortByLast));
+            }
+        };
+    }
+
+    public Specification<NoteElement> orderBy(String field, boolean isDesc) {
+        return new Specification<NoteElement>() {
+            @Override
+            public Predicate toPredicate(Root<NoteElement> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                if (isDesc) {
+                    cq.orderBy(cb.desc(root.get(field)));
+                } else {
+                    cq.orderBy(cb.asc(root.get(field)));
+                }
+                return cb.conjunction();
             }
         };
     }
