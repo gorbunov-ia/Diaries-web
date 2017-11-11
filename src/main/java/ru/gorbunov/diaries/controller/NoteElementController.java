@@ -79,7 +79,8 @@ public class NoteElementController {
         List<NoteElement> notesElements = noteElementRepository.findAll(
                 Specifications
                         .where(noteElementSpecification.byUser())
-                        .and(noteElementSpecification.byNote(note.getId())));
+                        .and(noteElementSpecification.byNote(note.getId()))
+                        .and(noteElementSpecification.orderBy("sortBy",true)));
         
         noteElementService.fillSortElement(notesElements);
         
