@@ -28,7 +28,6 @@ public final class NoteSpecification {
                 User user = userService.getUser();
                 
                 if (user != null) {
-                    cq.orderBy(cb.desc(root.get("lastModified")));
                     return cb.equal(root.get("user"), user);                        
                 } else {
                     return cb.disjunction();
@@ -42,6 +41,20 @@ public final class NoteSpecification {
             @Override
             public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
                 return cb.equal(root.get("id"), id);
+            }
+        };
+    }
+
+    public Specification<Note> orderBy(String field, boolean isDesc) {
+        return new Specification<Note>() {
+            @Override
+            public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                if (isDesc) {
+                    cq.orderBy(cb.desc(root.get(field)));
+                } else {
+                    cq.orderBy(cb.asc(root.get(field)));
+                }
+                return cb.conjunction();
             }
         };
     }

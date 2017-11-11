@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,9 @@ public class NoteController {
     @GetMapping
     public String getAllNotes(ModelMap model) {
         log.debug("REST request to get Notes.");
-        final List<Note> notes = (List<Note>) noteRepository.findAll(noteSpecification.byUser());
+        final List<Note> notes = noteRepository.findAll(Specifications
+                .where(noteSpecification.byUser())
+                .and(noteSpecification.orderBy("lastModified",true)));
         model.addAttribute("notes", notes);
         return "notes";
     }
