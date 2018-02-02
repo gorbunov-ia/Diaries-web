@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping(path = "")
     public ResponseEntity<User> getCurrentUser () {
         //TODO: logs
-        User user = userRepository.findOneByLogin("viruz");
+        User user = userRepository.findOneByLogin("test");
                 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

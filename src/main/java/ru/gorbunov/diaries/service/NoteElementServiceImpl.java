@@ -36,11 +36,9 @@ public class NoteElementServiceImpl implements NoteElementService {
     private final NoteElementSpecification noteElementSpecification;
     
     private final NoteRepository noteRepository;
-    
+
     private final NoteSpecification noteSpecification;
-    
-    private NoteElementServiceImpl noteElementService;
-    
+
     public NoteElementServiceImpl(NoteElementRepository noteElementRepository,
                                   NoteElementSpecification noteElementSpecification,
                                   NoteRepository noteRepository,
