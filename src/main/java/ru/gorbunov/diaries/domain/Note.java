@@ -2,6 +2,7 @@ package ru.gorbunov.diaries.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Note entity.
  *
  * @author Gorbunov.ia
  */
@@ -29,23 +31,38 @@ import javax.validation.constraints.Size;
 @Table(name = "t_Notes")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Note implements Serializable {
-    
+
+    /**
+     * Id entity.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
+    /**
+     * Owner of a note.
+     */
     @JsonIgnore
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)    
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID", nullable = false)
     private User user = null;
-    
+
+    /**
+     * Note description.
+     */
     @NotNull
     @Size(min = 1, max = 64)
     @Column(nullable = false, length = 64)
     private String description;
-    
+
+    /**
+     * Sorting order.
+     */
     private Integer sortBy = 0;
-    
+
+    /**
+     * Date of Last Modified.
+     */
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
@@ -114,5 +131,5 @@ public class Note implements Serializable {
         }
         return true;
     }
- 
+
 }

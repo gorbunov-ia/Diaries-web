@@ -10,25 +10,40 @@ import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.repository.UserRepository;
 
 /**
+ * Controller for user page.
  *
  * @author Gorbunov.ia
  */
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
-    
+
+    /**
+     * Repository for Users.
+     */
     private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
+    /**
+     * Base constructor.
+     *
+     * @param userRepository repository for crud operation with db
+     */
+    public UserController(final UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Method to get current user info.
+     *
+     * @return template name
+     */
     @GetMapping(path = "")
-    public ResponseEntity<User> getCurrentUser () {
-        //TODO: logs
+    public ResponseEntity<User> getCurrentUser() {
+        //todo: logs
+        //todo: real current user request
         User user = userRepository.findOneByLogin("test");
-                
+        //todo: HttpStatus.NOT_FOUND
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-    
+
 }

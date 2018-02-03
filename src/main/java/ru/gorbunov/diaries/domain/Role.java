@@ -14,21 +14,28 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Role entity.
  *
  * @author Gorbunov.ia
  */
 @Entity
 @Table(name = "t_Roles")
 public class Role implements Serializable {
- 
+
+    /**
+     * Id entity.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-        
+
+    /**
+     * Role description.
+     */
     @NotNull
     @Size(min = 6, max = 32)
     @Column(unique = true, nullable = false, length = 32)
-    private String description;    
+    private String description;
 
     public Integer getId() {
         return id;
@@ -70,5 +77,5 @@ public class Role implements Serializable {
         }
         return true;
     }
-    
+
 }

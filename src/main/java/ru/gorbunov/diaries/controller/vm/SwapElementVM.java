@@ -4,21 +4,37 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
+ * View Model to swap element http request.
  *
  * @author Gorbunov.ia
  */
 public class SwapElementVM {
-    
+
+    /**
+     * Editable note element id.
+     */
     @NotNull
     private Integer noteElementId;
-    
+
+    /**
+     * New sort by value.
+     */
     @NotNull
     private Integer sortBy;
 
+    /**
+     * Default constructor.
+     */
     public SwapElementVM() {
     }
-    
-    public SwapElementVM(Integer noteElementId, Integer sortBy) {
+
+    /**
+     * Base constructor.
+     *
+     * @param noteElementId editable note element id
+     * @param sortBy        new sort by for note element
+     */
+    public SwapElementVM(final Integer noteElementId, final Integer sortBy) {
         this.noteElementId = noteElementId;
         this.sortBy = sortBy;
     }
@@ -33,11 +49,11 @@ public class SwapElementVM {
 
     @Override
     public String toString() {
-        return "SwapElementVM{" 
-                + "noteElementId=" + noteElementId 
+        return "SwapElementVM{"
+                + "noteElementId=" + noteElementId
                 + ", sortBy=" + sortBy + '}';
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -66,5 +82,5 @@ public class SwapElementVM {
         }
         return true;
     }
-    
+
 }

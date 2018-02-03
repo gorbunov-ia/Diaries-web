@@ -23,37 +23,56 @@ import javax.validation.constraints.Size;
 import ru.gorbunov.diaries.controller.vm.SortElementVM;
 
 /**
+ * Note element entity.
  *
  * @author Gorbunov.ia
  */
 @Entity
 @Table(name = "t_NotesElements")
 public class NoteElement implements Serializable {
-    
+
+    /**
+     * Id entity.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
+    /**
+     * Note.
+     */
     @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)    
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "NoteID", nullable = false)
     private Note note = null;
-    
+
+    /**
+     * Note element description.
+     */
     @NotNull
     @Size(min = 1, max = 64)
     @Column(nullable = false, length = 64)
     private String description;
-    
+
+    /**
+     * Sorting order.
+     */
     private Integer sortBy = 0;
-    
+
+    /**
+     * Date of Last Modified.
+     */
     //@Basic(optional = false)
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
 
+    /**
+     * Class help to swap note elements on UI.
+     */
     @Transient
     private SortElementVM sortElementVm;
-    
+
     public Integer getId() {
         return id;
     }
@@ -126,5 +145,5 @@ public class NoteElement implements Serializable {
         }
         return true;
     }
-    
+
 }

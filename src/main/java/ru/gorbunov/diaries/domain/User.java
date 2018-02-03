@@ -22,42 +22,61 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 
 /**
+ * Role description.
  *
  * @author Gorbunov.ia
  */
 @Entity
 @Table(name = "t_Users")
 public class User implements Serializable {
-    
+
+    /**
+     * Id entity.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-        
+
+    /**
+     * User login.
+     */
     @NotNull
     @Size(min = 3, max = 32)
     @Column(unique = true, nullable = false, length = 32)
     private String login;
-    
+
+    /**
+     * Hash of user password.
+     */
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "Pswrd", nullable = false, length = 60)
     private String password;
-    
+
+    /**
+     * User email.
+     */
     @NotNull
     @Email
     @Column(nullable = false, length = 255)
     private String email;
-        
+
+    /**
+     * Indicator of user activate.
+     */
     private Boolean isActive = true;
 
+    /**
+     * Roles of user.
+     */
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "t_UsersRoles",
         joinColumns = {@JoinColumn(name = "UserID", referencedColumnName = "ID")},
         inverseJoinColumns = {@JoinColumn(name = "RoleID", referencedColumnName = "ID")})
     private Set<Role> roles = new HashSet<>();
-    
+
     public Integer getId() {
         return id;
     }
@@ -105,7 +124,7 @@ public class User implements Serializable {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -127,5 +146,5 @@ public class User implements Serializable {
         final User other = (User) obj;
         return Objects.equals(this.id, other.id);
     }
-        
+
 }

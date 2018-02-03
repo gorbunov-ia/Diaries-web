@@ -26,29 +26,56 @@ import ru.gorbunov.diaries.repository.specification.NoteSpecification;
 import ru.gorbunov.diaries.service.NoteElementService;
 
 /**
+ * Controller for note elements page.
  *
  * @author Gorbunov.ia
  */
 @Controller
 @RequestMapping(path = "/notes-elements")
 public class NoteElementController {
-    
-    private final Logger log = LoggerFactory.getLogger(NoteController.class);    
-    
+
+    /**
+     * Logger for class.
+     */
+    private final Logger log = LoggerFactory.getLogger(NoteController.class);
+
+    /**
+     * Repository for Note Elements.
+     */
     private final NoteElementRepository noteElementRepository;
-    
+
+    /**
+     * Specification for Note Elements.
+     */
     private final NoteElementSpecification noteElementSpecification;
-    
+
+    /**
+     * Repository for Note.
+     */
     private final NoteRepository noteRepository;
-    
+
+    /**
+     * Specification for Note.
+     */
     private final NoteSpecification noteSpecification;
-    
+
+    /**
+     * Service for interaction with note elements.
+     */
     private NoteElementService noteElementService;
-    
-    public NoteElementController (NoteElementRepository noteElementRepository, 
-            NoteElementSpecification noteElementSpecification,
-            NoteRepository noteRepository,
-            NoteSpecification noteSpecification) {        
+
+    /**
+     * Base constructor.
+     *
+     * @param noteElementRepository     note element repository for crud operation with db
+     * @param noteElementSpecification  note element specification for add condition into query to db
+     * @param noteRepository            note repository for crud operation with db
+     * @param noteSpecification         note specification for add condition into query to db
+     */
+    public NoteElementController(final NoteElementRepository noteElementRepository,
+                                 final NoteElementSpecification noteElementSpecification,
+                                 final NoteRepository noteRepository,
+                                 final NoteSpecification noteSpecification) {
         this.noteElementRepository = noteElementRepository;
         this.noteElementSpecification = noteElementSpecification;
         this.noteRepository = noteRepository;
@@ -63,60 +90,76 @@ public class NoteElementController {
     public void setNoteElementService(NoteElementService noteElementService) {
         this.noteElementService = noteElementService;
     }
-    
+
+    /**
+     * Method to get all note elements for note.
+     *
+     * @param noteId    note id
+     * @param model     Model Spring MVC
+     * @return          template name
+     * @throws          ResourceNotFoundException if note not found in db
+     */
     @GetMapping("/{noteId}")
-    public String getAllNotes(@PathVariable Integer noteId, ModelMap model) {
+    public String getAllNoteElements(@PathVariable final Integer noteId, ModelMap model) {
         log.debug("REST request to get NotesElements.");
-        
+
         final Note note = noteRepository.findOne(
                 Specifications
                         .where(noteSpecification.byUser())
                         .and(noteSpecification.byId(noteId)));
-                
-        if (note == null)
+
+        if (note == null) {
             throw new ResourceNotFoundException();
-        
+        }
+
         List<NoteElement> notesElements = noteElementRepository.findAll(
                 Specifications
                         .where(noteElementSpecification.byUser())
                         .and(noteElementSpecification.byNote(note.getId()))
-                        .and(noteElementSpecification.orderBy("sortBy",true)));
-        
+                        .and(noteElementSpecification.orderBy("sortBy", true)));
+
         noteElementService.fillSortElement(notesElements);
-        
+
         model.addAttribute("note", note);
         model.addAttribute("notesElements", notesElements);
-        
+
         return "notes-elements";
     }
 
 /*
-    @PostMapping(value="/swapJson", headers="Content type")    
+    @PostMapping(value="/swapJson", headers="Content type")
     public String swap(@Valid @RequestBody SwapElementVM swapVM) {
-            
+
         NoteElement element = noteElementService.changeSortBy(swapVM
                 .getNoteElementId(),swapVM.getSortBy());
-        
-        if (element != null) {
-            return "redirect:/notes-elements/" + element.getNote().getId();
-        } else {
-            throw new BadRequestException();
-        }        
-    }
-*/    
 
-    @PostMapping(value="/swap")    
-    public String swap(@RequestParam("noteElementId") 
-            Integer noteElementId, @RequestParam("sortBy") Integer sortBy) {
-        
-        NoteElement element = noteElementService.changeSortBy(noteElementId,
-                                                              sortBy);
-        
         if (element != null) {
             return "redirect:/notes-elements/" + element.getNote().getId();
         } else {
             throw new BadRequestException();
-        }   
+        }
     }
-    
+*/
+
+    /**
+     * Method set new sort by value to note element.
+     *
+     * @param noteElementId modifiable note element id
+     * @param sortBy        new sort by value
+     * @return              template name
+     * @throws              BadRequestException if note element id or sort by is wrong
+     */
+    @PostMapping(value = "/swap")
+    public String swap(@RequestParam("noteElementId") final Integer noteElementId,
+                       @RequestParam("sortBy") final Integer sortBy) {
+
+        NoteElement element = noteElementService.changeSortBy(noteElementId, sortBy);
+
+        if (element != null) {
+            return "redirect:/notes-elements/" + element.getNote().getId();
+        } else {
+            throw new BadRequestException();
+        }
+    }
+
 }
