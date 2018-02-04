@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.repository.UserRepository;
+import ru.gorbunov.diaries.service.UserService;
 
 /**
  * Controller for user page.
@@ -19,17 +19,17 @@ import ru.gorbunov.diaries.repository.UserRepository;
 public class UserController {
 
     /**
-     * Repository for Users.
+     * Service for interaction with user.
      */
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     /**
      * Base constructor.
      *
-     * @param userRepository repository for crud operation with db
+     * @param userService service for interaction with user
      */
-    public UserController(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(final UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<User> getCurrentUser() {
         //todo: logs
         //todo: real current user request
-        User user = userRepository.findOneByLogin("test");
+        User user = userService.getUserByLogin("test");
         //todo: HttpStatus.NOT_FOUND
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
