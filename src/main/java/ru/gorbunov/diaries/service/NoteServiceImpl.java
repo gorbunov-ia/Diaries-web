@@ -6,7 +6,7 @@ import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.repository.NoteRepository;
 import ru.gorbunov.diaries.repository.specification.NoteSpecification;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Implementation of service for interaction with notes.
@@ -39,9 +39,14 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Collection<Note> getUserNotesWithSort(String field, boolean isDesc) {
+    public List<Note> getUserNotesWithSort(String field, boolean isDesc) {
         return noteRepository.findAll(Specifications.where(noteSpecification.byUser())
                 .and(noteSpecification.orderBy(field, isDesc)));
     }
 
+    @Override
+    public Note getUserNoteById(Integer noteId) {
+        return noteRepository.findOne(Specifications.where(noteSpecification.byUser())
+                .and(noteSpecification.byId(noteId)));
+    }
 }

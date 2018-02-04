@@ -55,9 +55,7 @@ public class NoteElementServiceImpl implements NoteElementService {
         this.noteElementSpecification = specification;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public NoteElement changeSortBy(final Integer noteElementId, final Integer sortBy) {
         try {
@@ -127,9 +125,7 @@ public class NoteElementServiceImpl implements NoteElementService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void fillSortElement(final List<NoteElement> notesElements) {
         MutableInt first = new MutableInt();
         MutableInt last = new MutableInt();
@@ -169,4 +165,9 @@ public class NoteElementServiceImpl implements NoteElementService {
         last.setValue(minSortBy);
     }
 
+    @Override
+    public List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc) {
+        return noteElementRepository.findAll(Specifications.where(noteElementSpecification.byUser())
+                .and(noteElementSpecification.byNote(noteId)).and(noteElementSpecification.orderBy(field, isDesc)));
+    }
 }

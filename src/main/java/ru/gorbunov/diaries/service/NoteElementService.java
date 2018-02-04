@@ -26,4 +26,14 @@ public interface NoteElementService {
      * @param notesElements list of note element without sortElementVm
      */
     void fillSortElement(List<NoteElement> notesElements);
+
+    /**
+     * Method to get note elements for current user and note id with sorting.
+     *
+     * @param noteId    note id in db
+     * @param field     sorting field
+     * @param isDesc    ascending or descending sort
+     * @return          collection note elements
+     */
+    List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc);
 }

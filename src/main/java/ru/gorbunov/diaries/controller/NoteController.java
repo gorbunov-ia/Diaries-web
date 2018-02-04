@@ -1,6 +1,6 @@
 package ru.gorbunov.diaries.controller;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class NoteController {
     @GetMapping
     public String getAllNotes(ModelMap model) {
         log.debug("REST request to get Notes.");
-        final Collection<Note> notes = noteService.getUserNotesWithSort("lastModified", true);
+        final List<Note> notes = noteService.getUserNotesWithSort("lastModified", true);
         model.addAttribute("notes", notes);
         return "notes";
     }

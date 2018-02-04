@@ -5,8 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +17,8 @@ import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
-import ru.gorbunov.diaries.repository.NoteElementRepository;
-import ru.gorbunov.diaries.repository.NoteRepository;
-import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
-import ru.gorbunov.diaries.repository.specification.NoteSpecification;
 import ru.gorbunov.diaries.service.NoteElementService;
+import ru.gorbunov.diaries.service.NoteService;
 
 /**
  * Controller for note elements page.
@@ -40,54 +35,24 @@ public class NoteElementController {
     private final Logger log = LoggerFactory.getLogger(NoteController.class);
 
     /**
-     * Repository for Note Elements.
+     * Service for interaction with notes.
      */
-    private final NoteElementRepository noteElementRepository;
-
-    /**
-     * Specification for Note Elements.
-     */
-    private final NoteElementSpecification noteElementSpecification;
-
-    /**
-     * Repository for Note.
-     */
-    private final NoteRepository noteRepository;
-
-    /**
-     * Specification for Note.
-     */
-    private final NoteSpecification noteSpecification;
+    private final NoteService noteService;
 
     /**
      * Service for interaction with note elements.
      */
-    private NoteElementService noteElementService;
+    private final NoteElementService noteElementService;
 
     /**
      * Base constructor.
      *
-     * @param noteElementRepository     note element repository for crud operation with db
-     * @param noteElementSpecification  note element specification for add condition into query to db
-     * @param noteRepository            note repository for crud operation with db
-     * @param noteSpecification         note specification for add condition into query to db
+     * @param noteService           service for interaction with notes.
+     * @param noteElementService    service for interaction with note elements.
      */
-    public NoteElementController(final NoteElementRepository noteElementRepository,
-                                 final NoteElementSpecification noteElementSpecification,
-                                 final NoteRepository noteRepository,
-                                 final NoteSpecification noteSpecification) {
-        this.noteElementRepository = noteElementRepository;
-        this.noteElementSpecification = noteElementSpecification;
-        this.noteRepository = noteRepository;
-        this.noteSpecification = noteSpecification;
-    }
-
-    public NoteElementService getNoteElementService() {
-        return noteElementService;
-    }
-
-    @Autowired
-    public void setNoteElementService(NoteElementService noteElementService) {
+    public NoteElementController(final NoteService noteService,
+                                 final NoteElementService noteElementService) {
+        this.noteService = noteService;
         this.noteElementService = noteElementService;
     }
 
@@ -103,20 +68,14 @@ public class NoteElementController {
     public String getAllNoteElements(@PathVariable final Integer noteId, ModelMap model) {
         log.debug("REST request to get NotesElements.");
 
-        final Note note = noteRepository.findOne(
-                Specifications
-                        .where(noteSpecification.byUser())
-                        .and(noteSpecification.byId(noteId)));
+        final Note note = noteService.getUserNoteById(noteId);
 
         if (note == null) {
             throw new ResourceNotFoundException();
         }
 
-        List<NoteElement> notesElements = noteElementRepository.findAll(
-                Specifications
-                        .where(noteElementSpecification.byUser())
-                        .and(noteElementSpecification.byNote(note.getId()))
-                        .and(noteElementSpecification.orderBy("sortBy", true)));
+        List<NoteElement> notesElements = noteElementService.getUserNoteElementsByNoteWithSort(note.getId(),
+                "sortBy", true);
 
         noteElementService.fillSortElement(notesElements);
 
@@ -152,7 +111,8 @@ public class NoteElementController {
     @PostMapping(value = "/swap")
     public String swap(@RequestParam("noteElementId") final Integer noteElementId,
                        @RequestParam("sortBy") final Integer sortBy) {
-
+        log.debug("REST request to swap Note Element.");
+        
         NoteElement element = noteElementService.changeSortBy(noteElementId, sortBy);
 
         if (element != null) {

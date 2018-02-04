@@ -2,7 +2,7 @@ package ru.gorbunov.diaries.service;
 
 import ru.gorbunov.diaries.domain.Note;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Service for interaction with notes.
@@ -12,11 +12,19 @@ import java.util.Collection;
 public interface NoteService {
 
     /**
-     * Method to get notes for current user with sorting
+     * Method to get notes for current user with sorting.
      *
      * @param field     sorting field
      * @param isDesc    ascending or descending sort
      * @return          collection note entity
      */
-    Collection<Note> getUserNotesWithSort(String field, boolean isDesc);
+    List<Note> getUserNotesWithSort(String field, boolean isDesc);
+
+    /**
+     * Method to get note for current user by note id.
+     *
+     * @param noteId note id in db
+     * @return note entity or null if note id does not exist for current user
+     */
+    Note getUserNoteById(Integer noteId);
 }
