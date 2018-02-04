@@ -112,7 +112,7 @@ public class NoteElementController {
     public String swap(@RequestParam("noteElementId") final Integer noteElementId,
                        @RequestParam("sortBy") final Integer sortBy) {
         log.debug("REST request to swap Note Element.");
-        
+
         NoteElement element = noteElementService.changeSortBy(noteElementId, sortBy);
 
         if (element != null) {

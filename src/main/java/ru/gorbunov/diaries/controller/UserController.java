@@ -1,12 +1,15 @@
 package ru.gorbunov.diaries.controller;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ru.gorbunov.diaries.controller.vm.UserDto;
 import ru.gorbunov.diaries.domain.User;
+import ru.gorbunov.diaries.security.SecurityUtils;
 import ru.gorbunov.diaries.service.UserService;
 
 /**
@@ -24,12 +27,19 @@ public class UserController {
     private final UserService userService;
 
     /**
+     * A service interface for type conversion.
+     */
+    private final ConversionService conversionService;
+
+    /**
      * Base constructor.
      *
-     * @param userService service for interaction with user
+     * @param userService       service for interaction with user
+     * @param conversionService Spring conversion service
      */
-    public UserController(final UserService userService) {
+    public UserController(final UserService userService, final ConversionService conversionService) {
         this.userService = userService;
+        this.conversionService = conversionService;
     }
 
     /**
@@ -38,12 +48,14 @@ public class UserController {
      * @return template name
      */
     @GetMapping(path = "")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDto> getCurrentUser() {
         //todo: logs
-        //todo: real current user request
-        User user = userService.getUserByLogin("test");
-        //todo: HttpStatus.NOT_FOUND
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        User user = userService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        UserDto result = conversionService.convert(user, UserDto.class);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
