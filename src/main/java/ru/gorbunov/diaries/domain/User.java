@@ -1,7 +1,5 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -48,7 +46,6 @@ public class User implements Serializable {
     /**
      * Hash of user password.
      */
-    @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "Pswrd", nullable = false, length = 60)
@@ -59,7 +56,7 @@ public class User implements Serializable {
      */
     @NotNull
     @Email
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String email;
 
     /**
@@ -70,7 +67,6 @@ public class User implements Serializable {
     /**
      * Roles of user.
      */
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "t_UsersRoles",
         joinColumns = {@JoinColumn(name = "UserID", referencedColumnName = "ID")},
