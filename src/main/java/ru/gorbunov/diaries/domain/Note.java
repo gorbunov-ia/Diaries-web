@@ -1,9 +1,5 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -29,8 +25,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_Notes")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Note implements Serializable {
+public class Note {
 
     /**
      * Id entity.
@@ -42,7 +37,6 @@ public class Note implements Serializable {
     /**
      * Owner of a note.
      */
-    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID", nullable = false)
     private User user = null;
@@ -126,10 +120,7 @@ public class Note implements Serializable {
             return false;
         }
         final Note other = (Note) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

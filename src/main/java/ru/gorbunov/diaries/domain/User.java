@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.domain;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +25,7 @@ import org.hibernate.validator.constraints.Email;
  */
 @Entity
 @Table(name = "t_Users")
-public class User implements Serializable {
+public class User {
 
     /**
      * Id entity.
