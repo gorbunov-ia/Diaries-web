@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ru.gorbunov.diaries.controller.vm.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
@@ -45,15 +47,23 @@ public class NoteElementController {
     private final NoteElementService noteElementService;
 
     /**
+     * A service interface for type conversion.
+     */
+    private final ConversionService conversionService;
+
+    /**
      * Base constructor.
      *
      * @param noteService           service for interaction with notes.
      * @param noteElementService    service for interaction with note elements.
+     * @param conversionService     Spring conversion service
      */
     public NoteElementController(final NoteService noteService,
-                                 final NoteElementService noteElementService) {
+                                 final NoteElementService noteElementService,
+                                 final ConversionService conversionService) {
         this.noteService = noteService;
         this.noteElementService = noteElementService;
+        this.conversionService = conversionService;
     }
 
     /**
@@ -79,7 +89,7 @@ public class NoteElementController {
 
         noteElementService.fillSortElement(notesElements);
 
-        model.addAttribute("note", note);
+        model.addAttribute("note", conversionService.convert(note, NoteDto.class));
         model.addAttribute("notesElements", notesElements);
 
         return "notes-elements";
