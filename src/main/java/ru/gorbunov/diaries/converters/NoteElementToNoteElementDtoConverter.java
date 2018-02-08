@@ -2,24 +2,23 @@ package ru.gorbunov.diaries.converters;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import ru.gorbunov.diaries.controller.vm.NoteDto;
-import ru.gorbunov.diaries.domain.Note;
+import ru.gorbunov.diaries.controller.vm.NoteElementDto;
+import ru.gorbunov.diaries.domain.NoteElement;
 
 /**
- * Converter Note class to NoteDto class.
+ * Converter NoteElement class to NoteElementDto class.
  *
  * @author Gorbunov.ia
  */
 @Component
-public class NoteToNoteDtoConverter implements Converter<Note, NoteDto> {
+public class NoteElementToNoteElementDtoConverter implements Converter<NoteElement, NoteElementDto> {
 
     @Override
-    public NoteDto convert(Note source) {
+    public NoteElementDto convert(NoteElement source) {
         if (source == null) {
             throw new IllegalArgumentException("The source argument must to be NOT null.");
         }
-        final NoteDto target = new NoteDto();
+        final NoteElementDto target = new NoteElementDto();
         target.setId(source.getId());
         target.setDescription(source.getDescription());
         target.setSortBy(source.getSortBy());

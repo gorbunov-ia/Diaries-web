@@ -1,15 +1,17 @@
 package ru.gorbunov.diaries.controller.vm;
 
+import ru.gorbunov.diaries.domain.Movable;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 /**
- * Note Data Transfer Object.
+ * Note element Data Transfer Object.
  *
  * @author Gorbunov.ia
  */
-public class NoteDto implements Serializable {
+public class NoteElementDto implements Serializable, Movable {
 
     /**
      * Id entity.
@@ -17,7 +19,7 @@ public class NoteDto implements Serializable {
     private Integer id;
 
     /**
-     * Note description.
+     * Note element description.
      */
     private String description;
 
@@ -30,6 +32,11 @@ public class NoteDto implements Serializable {
      * Date of Last Modified.
      */
     private Date lastModified;
+
+    /**
+     * Class help to swap note elements on UI.
+     */
+    private SortElementVM sortElementVm;
 
     public Integer getId() {
         return id;
@@ -47,6 +54,7 @@ public class NoteDto implements Serializable {
         this.description = description;
     }
 
+    @Override
     public Integer getSortBy() {
         return sortBy;
     }
@@ -64,6 +72,16 @@ public class NoteDto implements Serializable {
     }
 
     @Override
+    public SortElementVM getSortElementVm() {
+        return sortElementVm;
+    }
+
+    @Override
+    public void setSortElementVm(SortElementVM sortElementVm) {
+        this.sortElementVm = sortElementVm;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -71,8 +89,8 @@ public class NoteDto implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NoteDto noteDto = (NoteDto) o;
-        return Objects.equals(id, noteDto.id);
+        NoteElementDto that = (NoteElementDto) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -80,4 +98,5 @@ public class NoteDto implements Serializable {
 
         return Objects.hash(id);
     }
+
 }

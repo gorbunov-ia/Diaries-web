@@ -1,6 +1,7 @@
 package ru.gorbunov.diaries.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ru.gorbunov.diaries.controller.vm.NoteDto;
+import ru.gorbunov.diaries.controller.vm.NoteElementDto;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
@@ -79,19 +81,21 @@ public class NoteElementController {
         log.debug("REST request to get NotesElements.");
 
         final Note note = noteService.getUserNoteById(noteId);
-
         if (note == null) {
             throw new ResourceNotFoundException();
         }
-
-        List<NoteElement> notesElements = noteElementService.getUserNoteElementsByNoteWithSort(note.getId(),
+        final List<NoteElement> notesElements = noteElementService.getUserNoteElementsByNoteWithSort(note.getId(),
                 "sortBy", true);
-
-        noteElementService.fillSortElement(notesElements);
+        if (notesElements.isEmpty()) {
+            return "notes-elements";
+        }
+        final List<NoteElementDto> notesElementsDto = notesElements.stream()
+                .map(noteElement -> conversionService.convert(noteElement, NoteElementDto.class))
+                .collect(Collectors.toList());
+        noteElementService.fillSortElement(notesElementsDto);
 
         model.addAttribute("note", conversionService.convert(note, NoteDto.class));
-        model.addAttribute("notesElements", notesElements);
-
+        model.addAttribute("notesElements", notesElementsDto);
         return "notes-elements";
     }
 

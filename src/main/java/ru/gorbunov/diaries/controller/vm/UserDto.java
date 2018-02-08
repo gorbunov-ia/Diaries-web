@@ -1,6 +1,7 @@
 package ru.gorbunov.diaries.controller.vm;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * User Data Transfer Object.
@@ -59,6 +60,24 @@ public class UserDto implements Serializable {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 
 }

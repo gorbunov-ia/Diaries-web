@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.domain;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,12 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import ru.gorbunov.diaries.controller.vm.SortElementVM;
 
 /**
  * Note element entity.
@@ -29,7 +25,7 @@ import ru.gorbunov.diaries.controller.vm.SortElementVM;
  */
 @Entity
 @Table(name = "t_NotesElements")
-public class NoteElement implements Serializable, Movable {
+public class NoteElement {
 
     /**
      * Id entity.
@@ -67,12 +63,6 @@ public class NoteElement implements Serializable, Movable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
 
-    /**
-     * Class help to swap note elements on UI.
-     */
-    @Transient
-    private SortElementVM sortElementVm;
-
     public Integer getId() {
         return id;
     }
@@ -97,7 +87,6 @@ public class NoteElement implements Serializable, Movable {
         this.description = description;
     }
 
-    @Override
     public Integer getSortBy() {
         return sortBy;
     }
@@ -112,16 +101,6 @@ public class NoteElement implements Serializable, Movable {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
-    }
-
-    @Override
-    public SortElementVM getSortElementVm() {
-        return sortElementVm;
-    }
-
-    @Override
-    public void setSortElementVm(SortElementVM sortElementVm) {
-        this.sortElementVm = sortElementVm;
     }
 
     @Override

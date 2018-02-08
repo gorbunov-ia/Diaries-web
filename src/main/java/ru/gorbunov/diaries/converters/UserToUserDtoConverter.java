@@ -19,7 +19,7 @@ public class UserToUserDtoConverter implements Converter<User, UserDto> {
         if (source == null) {
             throw new IllegalArgumentException("The source argument must to be NOT null.");
         }
-        UserDto target = new UserDto();
+        final UserDto target = new UserDto();
         target.setId(source.getId());
         target.setLogin(source.getLogin());
         target.setEmail(source.getEmail());
