@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.gorbunov.diaries.controller.vm.SortElementVM;
 import ru.gorbunov.diaries.domain.NoteElement;
+import ru.gorbunov.diaries.domain.Movable;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
@@ -126,18 +127,18 @@ public class NoteElementServiceImpl implements NoteElementService {
     }
 
     @Override
-    public void fillSortElement(final List<NoteElement> notesElements) {
+    public void fillSortElement(final List<? extends Movable> movables) {
         MutableInt first = new MutableInt();
         MutableInt last = new MutableInt();
         int maxSortBy = -1;
         int minSortBy = -1;
-        for (int i = 0; i < notesElements.size(); i++) {
-            NoteElement element = notesElements.get(i);
+        for (int i = 0; i < movables.size(); i++) {
+            Movable element = movables.get(i);
             SortElementVM sort = new SortElementVM();
             element.setSortElementVm(sort);
             sort.setFirst(first);
             sort.setLast(last);
-            if (notesElements.size() == 1) {
+            if (movables.size() == 1) {
                 sort.setPrev(element.getSortBy());
                 sort.setNext(element.getSortBy());
                 minSortBy = element.getSortBy();
@@ -146,13 +147,13 @@ public class NoteElementServiceImpl implements NoteElementService {
             }
             if (i == 0) {
                 sort.setPrev(element.getSortBy());
-                sort.setNext(notesElements.get(i + 1).getSortBy());
-            } else if (i == notesElements.size() - 1) {
-                sort.setPrev(notesElements.get(i - 1).getSortBy());
+                sort.setNext(movables.get(i + 1).getSortBy());
+            } else if (i == movables.size() - 1) {
+                sort.setPrev(movables.get(i - 1).getSortBy());
                 sort.setNext(element.getSortBy());
             } else {
-                sort.setPrev(notesElements.get(i - 1).getSortBy());
-                sort.setNext(notesElements.get(i + 1).getSortBy());
+                sort.setPrev(movables.get(i - 1).getSortBy());
+                sort.setNext(movables.get(i + 1).getSortBy());
             }
             if (element.getSortBy() > maxSortBy || maxSortBy == -1) {
                 maxSortBy = element.getSortBy();

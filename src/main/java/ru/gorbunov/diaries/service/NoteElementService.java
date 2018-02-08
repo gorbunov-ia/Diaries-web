@@ -1,6 +1,7 @@
 package ru.gorbunov.diaries.service;
 
 import ru.gorbunov.diaries.domain.NoteElement;
+import ru.gorbunov.diaries.domain.Movable;
 
 import java.util.List;
 
@@ -23,9 +24,9 @@ public interface NoteElementService {
     /**
      * Add sortElementVm (helper on UI) to each note element.
      *
-     * @param notesElements list of note element without sortElementVm
+     * @param movables list of movable elements without sortElementVm
      */
-    void fillSortElement(List<NoteElement> notesElements);
+    void fillSortElement(List<? extends Movable> movables);
 
     /**
      * Method to get note elements for current user and note id with sorting.

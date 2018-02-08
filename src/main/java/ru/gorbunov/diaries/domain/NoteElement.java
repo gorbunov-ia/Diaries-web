@@ -29,7 +29,7 @@ import ru.gorbunov.diaries.controller.vm.SortElementVM;
  */
 @Entity
 @Table(name = "t_NotesElements")
-public class NoteElement implements Serializable {
+public class NoteElement implements Serializable, Movable {
 
     /**
      * Id entity.
@@ -97,6 +97,7 @@ public class NoteElement implements Serializable {
         this.description = description;
     }
 
+    @Override
     public Integer getSortBy() {
         return sortBy;
     }
@@ -113,10 +114,12 @@ public class NoteElement implements Serializable {
         this.lastModified = lastModified;
     }
 
+    @Override
     public SortElementVM getSortElementVm() {
         return sortElementVm;
     }
 
+    @Override
     public void setSortElementVm(SortElementVM sortElementVm) {
         this.sortElementVm = sortElementVm;
     }
@@ -140,10 +143,7 @@ public class NoteElement implements Serializable {
             return false;
         }
         final NoteElement other = (NoteElement) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }
