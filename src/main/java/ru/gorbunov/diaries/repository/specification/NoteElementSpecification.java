@@ -1,10 +1,6 @@
 package ru.gorbunov.diaries.repository.specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -12,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.service.UserService;
 
 /**
  * Specification for add condition to the note elements into query to db.
@@ -23,37 +18,18 @@ import ru.gorbunov.diaries.service.UserService;
 public final class NoteElementSpecification {
 
     /**
-     * Service for interaction with user.
-     */
-    private final UserService userService;
-
-    /**
-     * Base constructor.
-     *
-     * @param service service for interaction with user
-     */
-    public NoteElementSpecification(final UserService service) {
-        this.userService = service;
-    }
-
-    /**
      * Create user condition to the query.
      *
+     * @param user object
      * @return specification for query to the user
      */
-    public Specification<NoteElement> byUser() {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                User user = userService.getUser();
-
-                if (user != null) {
-                    final Join<NoteElement, Note> joinNote = root.join("note");
-                    return cb.equal(joinNote.get("user"), user);
-                } else {
-                    return cb.disjunction();
-                }
+    public Specification<NoteElement> byUser(User user) {
+        return (root, cq, cb) -> {
+            if (user != null) {
+                final Join<NoteElement, Note> joinNote = root.join("note");
+                return cb.equal(joinNote.get("user"), user);
+            } else {
+                return cb.disjunction();
             }
         };
     }
@@ -65,13 +41,7 @@ public final class NoteElementSpecification {
      * @return      specification for query to the note
      */
     public Specification<NoteElement> byNote(final Integer id) {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                return cb.equal(root.get("note"), id);
-            }
-        };
+        return (root, cq, cb) -> cb.equal(root.get("note"), id);
     }
 
     /**
@@ -81,13 +51,7 @@ public final class NoteElementSpecification {
      * @return      specification for query to the note element
      */
     public Specification<NoteElement> byId(final Integer id) {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                return cb.equal(root.get("id"), id);
-            }
-        };
+        return (root, cq, cb) -> cb.equal(root.get("id"), id);
     }
 
     /**
@@ -97,13 +61,7 @@ public final class NoteElementSpecification {
      * @return          specification for query to the note element
      */
     public Specification<NoteElement> bySortBy(final Integer sortBy) {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                return cb.equal(root.get("sortBy"), sortBy);
-            }
-        };
+        return (root, cq, cb) -> cb.equal(root.get("sortBy"), sortBy);
     }
 
     /**
@@ -115,14 +73,8 @@ public final class NoteElementSpecification {
      */
     public Specification<NoteElement> byRangeSortBy(final Integer sortByFirst,
                                                     final Integer sortByLast) {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                return cb.and(cb.greaterThanOrEqualTo(root.get("sortBy"), sortByFirst),
-                        cb.lessThanOrEqualTo(root.get("sortBy"), sortByLast));
-            }
-        };
+        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get("sortBy"), sortByFirst),
+                cb.lessThanOrEqualTo(root.get("sortBy"), sortByLast));
     }
 
     /**
@@ -133,17 +85,13 @@ public final class NoteElementSpecification {
      * @return          specification for query to the note element
      */
     public Specification<NoteElement> orderBy(final String field, final boolean isDesc) {
-        return new Specification<NoteElement>() {
-            @Override
-            public Predicate toPredicate(final Root<NoteElement> root, final CriteriaQuery<?> cq,
-                                         final CriteriaBuilder cb) {
-                if (isDesc) {
-                    cq.orderBy(cb.desc(root.get(field)));
-                } else {
-                    cq.orderBy(cb.asc(root.get(field)));
-                }
-                return cb.conjunction();
+        return (root, cq, cb) -> {
+            if (isDesc) {
+                cq.orderBy(cb.desc(root.get(field)));
+            } else {
+                cq.orderBy(cb.asc(root.get(field)));
             }
+            return cb.conjunction();
         };
     }
 

@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gorbunov.diaries.controller.vm.SortElementVm;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
+import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
@@ -45,23 +47,35 @@ public class NoteElementServiceImpl implements NoteElementService {
     private final NoteElementSpecification noteElementSpecification;
 
     /**
+     * Service for interaction with user.
+     */
+    private final UserService userService;
+
+    /**
      * Base constructor.
      *
-     * @param repository     repository for crud operation with db
-     * @param specification  specification for add condition into query to db
+     * @param repository    repository for crud operation with db
+     * @param specification specification for add condition into query to db
+     * @param userService   service for interaction with user
      */
     public NoteElementServiceImpl(final NoteElementRepository repository,
-                                  final NoteElementSpecification specification) {
+                                  final NoteElementSpecification specification,
+                                  final UserService userService) {
         this.noteElementRepository = repository;
         this.noteElementSpecification = specification;
+        this.userService = userService;
     }
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public NoteElement changeSortBy(final Integer noteElementId, final Integer sortBy) {
+        final User user = userService.getUser();
+        if (user == null) {
+            return null;
+        }
         try {
             NoteElement noteElement = noteElementRepository.findOne(Specifications
-                    .where(noteElementSpecification.byUser()).and(noteElementSpecification.byId(noteElementId)));
+                    .where(noteElementSpecification.byUser(user)).and(noteElementSpecification.byId(noteElementId)));
 
             if (noteElement == null || noteElement.getSortBy().equals(sortBy)) {
                 throw new SwapElementException();
@@ -168,7 +182,11 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     public List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc) {
-        return noteElementRepository.findAll(Specifications.where(noteElementSpecification.byUser())
+        final User user = userService.getUser();
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        return noteElementRepository.findAll(Specifications.where(noteElementSpecification.byUser(user))
                 .and(noteElementSpecification.byNote(noteId)).and(noteElementSpecification.orderBy(field, isDesc)));
     }
 }
