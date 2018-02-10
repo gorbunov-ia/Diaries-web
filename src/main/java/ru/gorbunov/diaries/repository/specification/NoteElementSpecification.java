@@ -15,7 +15,7 @@ import ru.gorbunov.diaries.domain.User;
  * @author Gorbunov.ia
  */
 @Service
-public final class NoteElementSpecification {
+public final class NoteElementSpecification extends AbstractSpecification<NoteElement> {
 
     /**
      * Create user condition to the query.
@@ -23,6 +23,7 @@ public final class NoteElementSpecification {
      * @param user object
      * @return specification for query to the user
      */
+    @Override
     public Specification<NoteElement> byUser(User user) {
         return (root, cq, cb) -> {
             if (user != null) {
@@ -42,16 +43,6 @@ public final class NoteElementSpecification {
      */
     public Specification<NoteElement> byNote(final Integer id) {
         return (root, cq, cb) -> cb.equal(root.get("note"), id);
-    }
-
-    /**
-     * Create note element id condition to the query.
-     *
-     * @param id    note element id
-     * @return      specification for query to the note element
-     */
-    public Specification<NoteElement> byId(final Integer id) {
-        return (root, cq, cb) -> cb.equal(root.get("id"), id);
     }
 
     /**
@@ -75,24 +66,6 @@ public final class NoteElementSpecification {
                                                     final Integer sortByLast) {
         return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get("sortBy"), sortByFirst),
                 cb.lessThanOrEqualTo(root.get("sortBy"), sortByLast));
-    }
-
-    /**
-     * Method add "order by" statement to the query.
-     *
-     * @param field     field for sort
-     * @param isDesc    asc or desc order
-     * @return          specification for query to the note element
-     */
-    public Specification<NoteElement> orderBy(final String field, final boolean isDesc) {
-        return (root, cq, cb) -> {
-            if (isDesc) {
-                cq.orderBy(cb.desc(root.get(field)));
-            } else {
-                cq.orderBy(cb.asc(root.get(field)));
-            }
-            return cb.conjunction();
-        };
     }
 
 }

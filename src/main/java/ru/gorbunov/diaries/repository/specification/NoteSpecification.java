@@ -12,7 +12,7 @@ import ru.gorbunov.diaries.domain.User;
  * @author Gorbunov.ia
  */
 @Service
-public final class NoteSpecification {
+public final class NoteSpecification extends AbstractSpecification<Note> {
 
     /**
      * Create user condition to the query.
@@ -20,6 +20,7 @@ public final class NoteSpecification {
      * @param user object
      * @return specification for query to the user
      */
+    @Override
     public Specification<Note> byUser(User user) {
         return (root, cq, cb) -> {
             if (user != null) {
@@ -27,34 +28,6 @@ public final class NoteSpecification {
             } else {
                 return cb.disjunction();
             }
-        };
-    }
-
-    /**
-     * Create note id condition to the query.
-     *
-     * @param id    user id
-     * @return      specification for query to the note
-     */
-    public Specification<Note> byId(final Integer id) {
-        return (root, cq, cb) -> cb.equal(root.get("id"), id);
-    }
-
-    /**
-     * Method add "order by" statement to the query.
-     *
-     * @param field     field for sort
-     * @param isDesc    asc or desc order
-     * @return          specification for query to the note
-     */
-    public Specification<Note> orderBy(final String field, final boolean isDesc) {
-        return (root, cq, cb) -> {
-            if (isDesc) {
-                cq.orderBy(cb.desc(root.get(field)));
-            } else {
-                cq.orderBy(cb.asc(root.get(field)));
-            }
-            return cb.conjunction();
         };
     }
 
