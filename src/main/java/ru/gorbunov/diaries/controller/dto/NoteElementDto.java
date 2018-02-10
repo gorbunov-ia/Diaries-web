@@ -1,5 +1,6 @@
-package ru.gorbunov.diaries.controller.vm;
+package ru.gorbunov.diaries.controller.dto;
 
+import ru.gorbunov.diaries.controller.vm.SortElementVm;
 import ru.gorbunov.diaries.domain.Movable;
 
 import java.util.Date;
@@ -30,7 +31,7 @@ public class NoteElementDto extends GeneralDto implements Movable {
     /**
      * Class help to swap note elements on UI.
      */
-    private SortElementVM sortElementVm;
+    private SortElementVm sortElementVm;
 
     public String getDescription() {
         return description;
@@ -58,12 +59,12 @@ public class NoteElementDto extends GeneralDto implements Movable {
     }
 
     @Override
-    public SortElementVM getSortElementVm() {
+    public SortElementVm getSortElementVm() {
         return sortElementVm;
     }
 
     @Override
-    public void setSortElementVm(SortElementVM sortElementVm) {
+    public void setSortElementVm(SortElementVm sortElementVm) {
         this.sortElementVm = sortElementVm;
     }
 

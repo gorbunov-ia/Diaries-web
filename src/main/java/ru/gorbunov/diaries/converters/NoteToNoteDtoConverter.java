@@ -3,7 +3,7 @@ package ru.gorbunov.diaries.converters;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import ru.gorbunov.diaries.controller.vm.NoteDto;
+import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
 
 /**

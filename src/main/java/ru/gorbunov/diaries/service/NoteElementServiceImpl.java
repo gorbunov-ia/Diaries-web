@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.gorbunov.diaries.controller.vm.SortElementVM;
+import ru.gorbunov.diaries.controller.vm.SortElementVm;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
 import ru.gorbunov.diaries.exception.SwapElementException;
@@ -134,7 +134,7 @@ public class NoteElementServiceImpl implements NoteElementService {
         int minSortBy = -1;
         for (int i = 0; i < movables.size(); i++) {
             Movable element = movables.get(i);
-            SortElementVM sort = new SortElementVM();
+            SortElementVm sort = new SortElementVm();
             element.setSortElementVm(sort);
             sort.setFirst(first);
             sort.setLast(last);

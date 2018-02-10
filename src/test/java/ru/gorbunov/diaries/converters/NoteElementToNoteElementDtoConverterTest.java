@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ru.gorbunov.diaries.controller.vm.NoteElementDto;
+import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.domain.NoteElement;
 
 import java.time.Instant;

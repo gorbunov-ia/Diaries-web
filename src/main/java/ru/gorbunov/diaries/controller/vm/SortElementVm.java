@@ -7,7 +7,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
  *
  * @author Gorbunov.ia
  */
-public class SortElementVM {
+public class SortElementVm {
 
     /**
      * Sort by field first note element on page.

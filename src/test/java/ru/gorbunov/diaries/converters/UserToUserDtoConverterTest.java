@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ru.gorbunov.diaries.controller.vm.UserDto;
+import ru.gorbunov.diaries.controller.dto.UserDto;
 import ru.gorbunov.diaries.domain.User;
 
 import java.util.Random;

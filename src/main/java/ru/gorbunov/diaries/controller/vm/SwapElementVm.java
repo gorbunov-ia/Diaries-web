@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author Gorbunov.ia
  */
-public class SwapElementVM {
+public class SwapElementVm {
 
     /**
      * Editable note element id.
@@ -25,7 +25,7 @@ public class SwapElementVM {
     /**
      * Default constructor.
      */
-    public SwapElementVM() {
+    public SwapElementVm() {
     }
 
     /**
@@ -34,7 +34,7 @@ public class SwapElementVM {
      * @param noteElementId editable note element id
      * @param sortBy        new sort by for note element
      */
-    public SwapElementVM(final Integer noteElementId, final Integer sortBy) {
+    public SwapElementVm(final Integer noteElementId, final Integer sortBy) {
         this.noteElementId = noteElementId;
         this.sortBy = sortBy;
     }
@@ -49,7 +49,7 @@ public class SwapElementVM {
 
     @Override
     public String toString() {
-        return "SwapElementVM{"
+        return "SwapElementVm{"
                 + "noteElementId=" + noteElementId
                 + ", sortBy=" + sortBy + '}';
     }
@@ -73,7 +73,7 @@ public class SwapElementVM {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SwapElementVM other = (SwapElementVM) obj;
+        final SwapElementVm other = (SwapElementVm) obj;
         if (!Objects.equals(this.noteElementId, other.noteElementId)) {
             return false;
         }

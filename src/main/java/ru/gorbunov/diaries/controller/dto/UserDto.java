@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.controller.vm;
+package ru.gorbunov.diaries.controller.dto;
 
 import java.util.Objects;
 

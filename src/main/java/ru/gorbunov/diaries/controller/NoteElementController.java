@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ru.gorbunov.diaries.controller.vm.NoteDto;
-import ru.gorbunov.diaries.controller.vm.NoteElementDto;
+import ru.gorbunov.diaries.controller.dto.NoteDto;
+import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
@@ -101,7 +101,7 @@ public class NoteElementController {
 
 /*
     @PostMapping(value="/swapJson", headers="Content type")
-    public String swap(@Valid @RequestBody SwapElementVM swapVM) {
+    public String swap(@Valid @RequestBody SwapElementVm swapVM) {
 
         NoteElement element = noteElementService.changeSortBy(swapVM
                 .getNoteElementId(),swapVM.getSortBy());

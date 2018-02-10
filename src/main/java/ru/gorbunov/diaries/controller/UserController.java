@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.gorbunov.diaries.controller.vm.UserDto;
+import ru.gorbunov.diaries.controller.dto.UserDto;
 import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.security.SecurityUtils;
 import ru.gorbunov.diaries.service.UserService;

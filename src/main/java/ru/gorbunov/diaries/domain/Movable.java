@@ -1,6 +1,6 @@
 package ru.gorbunov.diaries.domain;
 
-import ru.gorbunov.diaries.controller.vm.SortElementVM;
+import ru.gorbunov.diaries.controller.vm.SortElementVm;
 
 /**
  * Interface for movable elements on UI.
@@ -21,13 +21,13 @@ public interface Movable {
      *
      * @return sort element helper
      */
-    SortElementVM getSortElementVm();
+    SortElementVm getSortElementVm();
 
     /**
      * Method to set help class to swap elements on UI.
      *
      * @param sortElement sort element helper
      */
-    void setSortElementVm(SortElementVM sortElement);
+    void setSortElementVm(SortElementVm sortElement);
 
 }
