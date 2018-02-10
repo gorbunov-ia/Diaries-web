@@ -1,13 +1,9 @@
 package ru.gorbunov.diaries.domain;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import javax.validation.constraints.NotNull;
@@ -20,14 +16,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_Roles")
-public class Role implements Serializable {
-
-    /**
-     * Id entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Role extends GeneralEntity {
 
     /**
      * Role description.
@@ -36,14 +25,6 @@ public class Role implements Serializable {
     @Size(min = 6, max = 32)
     @Column(unique = true, nullable = false, length = 32)
     private String description;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -56,7 +37,7 @@ public class Role implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + Objects.hashCode(this.id);
+        hash = 19 * hash + Objects.hashCode(getId());
         return hash;
     }
 
@@ -72,7 +53,7 @@ public class Role implements Serializable {
             return false;
         }
         final Role other = (Role) obj;
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(getId(), other.getId());
     }
 
 }

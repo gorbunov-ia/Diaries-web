@@ -6,9 +6,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -25,14 +22,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_NotesElements")
-public class NoteElement {
-
-    /**
-     * Id entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class NoteElement extends GeneralEntity {
 
     /**
      * Note.
@@ -62,14 +52,6 @@ public class NoteElement {
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Note getNote() {
         return note;
@@ -106,7 +88,7 @@ public class NoteElement {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 17 * hash + Objects.hashCode(this.id);
+        hash = 17 * hash + Objects.hashCode(getId());
         return hash;
     }
 
@@ -122,7 +104,7 @@ public class NoteElement {
             return false;
         }
         final NoteElement other = (NoteElement) obj;
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(getId(), other.getId());
     }
 
 }

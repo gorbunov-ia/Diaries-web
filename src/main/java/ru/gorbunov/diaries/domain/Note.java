@@ -6,9 +6,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -25,14 +22,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_Notes")
-public class Note {
-
-    /**
-     * Id entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Note extends GeneralEntity {
 
     /**
      * Owner of a note.
@@ -60,14 +50,6 @@ public class Note {
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;
@@ -104,7 +86,7 @@ public class Note {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(getId());
         return hash;
     }
 
@@ -120,7 +102,7 @@ public class Note {
             return false;
         }
         final Note other = (Note) obj;
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(getId(), other.getId());
     }
 
 }

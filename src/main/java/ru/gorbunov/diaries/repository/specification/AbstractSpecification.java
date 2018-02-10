@@ -2,15 +2,16 @@ package ru.gorbunov.diaries.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import ru.gorbunov.diaries.domain.GeneralEntity;
 import ru.gorbunov.diaries.domain.User;
 
 /**
- * Specification for add condition to the abstract entity into query to db.
+ * Specification for add condition to the entity into query to db.
  *
  * @param <T> domain entity
  * @author Gorbunov.ia
  */
-public abstract class AbstractSpecification<T> {
+public abstract class AbstractSpecification<T extends GeneralEntity> {
 
     /**
      * Create user condition to the query.
