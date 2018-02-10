@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.controller.vm;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,12 +8,7 @@ import java.util.Objects;
  *
  * @author Gorbunov.ia
  */
-public class NoteDto implements Serializable {
-
-    /**
-     * Id entity.
-     */
-    private Integer id;
+public class NoteDto extends GeneralDto {
 
     /**
      * Note description.
@@ -30,14 +24,6 @@ public class NoteDto implements Serializable {
      * Date of Last Modified.
      */
     private Date lastModified;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -72,12 +58,12 @@ public class NoteDto implements Serializable {
             return false;
         }
         NoteDto noteDto = (NoteDto) o;
-        return Objects.equals(id, noteDto.id);
+        return Objects.equals(getId(), noteDto.getId());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 }

@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.controller.vm;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -8,12 +7,7 @@ import java.util.Objects;
  *
  * @author Gorbunov.ia
  */
-public class UserDto implements Serializable {
-
-    /**
-     * Id entity.
-     */
-    private Integer id;
+public class UserDto extends GeneralDto {
 
     /**
      * User login.
@@ -29,14 +23,6 @@ public class UserDto implements Serializable {
      * Indicator of user activate.
      */
     private Boolean isActive = true;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getLogin() {
         return login;
@@ -71,13 +57,13 @@ public class UserDto implements Serializable {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id);
+        return Objects.equals(getId(), userDto.getId());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
 }

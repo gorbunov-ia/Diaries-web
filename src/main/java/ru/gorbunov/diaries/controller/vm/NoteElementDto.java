@@ -2,7 +2,6 @@ package ru.gorbunov.diaries.controller.vm;
 
 import ru.gorbunov.diaries.domain.Movable;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -11,12 +10,7 @@ import java.util.Objects;
  *
  * @author Gorbunov.ia
  */
-public class NoteElementDto implements Serializable, Movable {
-
-    /**
-     * Id entity.
-     */
-    private Integer id;
+public class NoteElementDto extends GeneralDto implements Movable {
 
     /**
      * Note element description.
@@ -37,14 +31,6 @@ public class NoteElementDto implements Serializable, Movable {
      * Class help to swap note elements on UI.
      */
     private SortElementVM sortElementVm;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -90,13 +76,13 @@ public class NoteElementDto implements Serializable, Movable {
             return false;
         }
         NoteElementDto that = (NoteElementDto) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
 }

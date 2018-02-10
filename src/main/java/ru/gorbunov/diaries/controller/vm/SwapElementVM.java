@@ -77,10 +77,7 @@ public class SwapElementVM {
         if (!Objects.equals(this.noteElementId, other.noteElementId)) {
             return false;
         }
-        if (!Objects.equals(this.sortBy, other.sortBy)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sortBy, other.sortBy);
     }
 
 }
