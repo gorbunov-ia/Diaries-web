@@ -18,6 +18,7 @@ public interface NoteElementService {
      * @param noteElementId editing note element
      * @param sortBy        new sort by
      * @return              note element with new sort by
+     * @throws              IllegalArgumentException if arguments contains null
      */
     NoteElement changeSortBy(Integer noteElementId, Integer sortBy);
 

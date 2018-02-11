@@ -69,6 +69,9 @@ public class NoteElementServiceImpl implements NoteElementService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public NoteElement changeSortBy(final Integer noteElementId, final Integer sortBy) {
+        if (noteElementId == null || sortBy == null) {
+            throw new IllegalArgumentException("Arguments must be not null.");
+        }
         final User user = userService.getUser();
         if (user == null) {
             return null;
@@ -97,7 +100,7 @@ public class NoteElementServiceImpl implements NoteElementService {
             }
             List<NoteElement> noteElementsForShift = noteElementRepository.findAll(spec);
 
-            if (noteElementsForShift == null) {
+            if (noteElementsForShift.isEmpty()) {
                 throw new SwapElementException();
             }
 
