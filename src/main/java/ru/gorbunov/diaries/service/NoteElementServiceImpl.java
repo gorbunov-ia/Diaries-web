@@ -77,70 +77,133 @@ public class NoteElementServiceImpl implements NoteElementService {
             return null;
         }
         try {
-            NoteElement noteElement = noteElementRepository.findOne(Specifications
-                    .where(noteElementSpecification.byUser(user)).and(noteElementSpecification.byId(noteElementId)));
-
-            if (noteElement == null || noteElement.getSortBy().equals(sortBy)) {
+            final NoteElement noteElement = getNoteElementByIdAndUser(noteElementId, user);
+            if (noteElement == null) {
+                throw new SwapElementException();
+            }
+            if (noteElement.getSortBy().equals(sortBy)) {
+                return noteElement;
+            }
+            final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement, sortBy);
+            if (noteElementsForShift.isEmpty()) {
+                throw new SwapElementException();
+            }
+            if (!noteElementsContainSortBy(noteElementsForShift, sortBy)) {
                 throw new SwapElementException();
             }
 
             final Integer oldSortBy = noteElement.getSortBy();
+            prepareNoteElementsForShift(noteElementsForShift, noteElement);
+            saveNoteElementsForShift(noteElementsForShift, noteElement);
+            swapNoteElements(noteElementsForShift, noteElement, oldSortBy, sortBy);
 
-            Specification<NoteElement> spec = noteElementSpecification.byNote(noteElement.getNote().getId());
-            if (oldSortBy <= sortBy) {
-                //Up order
-                spec = Specifications.where(spec)
-                        .and(noteElementSpecification.byRangeSortBy(oldSortBy + 1, sortBy))
-                        .and(noteElementSpecification.orderBy("sortBy", true));
-            } else {
-                //Down order
-                spec = Specifications.where(spec)
-                        .and(noteElementSpecification.byRangeSortBy(sortBy, oldSortBy - 1))
-                        .and(noteElementSpecification.orderBy("sortBy", false));
-            }
-            List<NoteElement> noteElementsForShift = noteElementRepository.findAll(spec);
-
-            if (noteElementsForShift.isEmpty()) {
-                throw new SwapElementException();
-            }
-
-            boolean hasSortByItem = false;
-            for (NoteElement element : noteElementsForShift) {
-                if (element.getSortBy().equals(sortBy)) {
-                    hasSortByItem = true;
-                }
-                //Stupid MySQL constraint
-                element.setSortBy(element.getSortBy() * (-1));
-            }
-            if (!hasSortByItem) {
-                throw new SwapElementException();
-            }
-
-            //Stupid MySQL constraint
-            noteElement.setSortBy(noteElement.getSortBy() * (-1));
-            noteElementRepository.save(noteElement);
-            noteElementRepository.save(noteElementsForShift);
-            noteElementRepository.flush();
-            //Swap elements
-            for (int i = 0; i < noteElementsForShift.size() - 1; i++) {
-                Integer itemSortBy = noteElementsForShift.get(i).getSortBy();
-                Integer nextItemSortBy = noteElementsForShift.get(i + 1).getSortBy();
-                noteElementsForShift.get(i).setSortBy(nextItemSortBy * (-1));
-                noteElementsForShift.get(i + 1).setSortBy(itemSortBy);
-            }
-            //Last swap
-            noteElementsForShift.get(noteElementsForShift.size() - 1).setSortBy(oldSortBy);
-            noteElement.setSortBy(sortBy);
-            noteElement.setLastModified(new Date());
-
-            noteElementRepository.save(noteElementsForShift);
-            noteElementRepository.save(noteElement);
-            noteElementRepository.flush();
+            saveNoteElementsForShift(noteElementsForShift, noteElement);
             return noteElement;
         } catch (Exception e) {
             log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
             return null;
         }
+    }
+
+    /**
+     * Select note element by id and user object from db.
+     *
+     * @param noteElementId note element id in db
+     * @param user          note owner
+     * @return              note element
+     */
+    private NoteElement getNoteElementByIdAndUser(final Integer noteElementId, final User user) {
+        return noteElementRepository.findOne(Specifications.where(noteElementSpecification.byUser(user))
+                .and(noteElementSpecification.byId(noteElementId)));
+    }
+
+    /**
+     * Select note elements between old sort by and new sort by for shift from db.
+     *
+     * @param noteElement   note element for change sort by
+     * @param newSortBy     new sort by value
+     * @return              list of note elements
+     */
+    private List<NoteElement> getNoteElementsForShift(final NoteElement noteElement, final Integer newSortBy) {
+        Specification<NoteElement> spec = noteElementSpecification.byNote(noteElement.getNote().getId());
+        if (noteElement.getSortBy() <= newSortBy) {
+            //Up order
+            spec = Specifications.where(spec)
+                    .and(noteElementSpecification.byRangeSortBy(noteElement.getSortBy() + 1, newSortBy))
+                    .and(noteElementSpecification.orderBy("sortBy", true));
+        } else {
+            //Down order
+            spec = Specifications.where(spec)
+                    .and(noteElementSpecification.byRangeSortBy(newSortBy, noteElement.getSortBy() - 1))
+                    .and(noteElementSpecification.orderBy("sortBy", false));
+        }
+        return noteElementRepository.findAll(spec);
+    }
+
+    /**
+     * Search note element with sort by in list.
+     *
+     * @param noteElements  list for search
+     * @param sortBy        target sort by
+     * @return              true if contains
+     */
+    private boolean noteElementsContainSortBy(final List<NoteElement> noteElements, final Integer sortBy) {
+        for (NoteElement element : noteElements) {
+            if (element.getSortBy().equals(sortBy)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Prepare list of note elements to shift.
+     *
+     * @param noteElementsForShift  note elements with old sort by note element
+     * @param noteElement           note element for change sort by
+     */
+    private void prepareNoteElementsForShift(final List<NoteElement> noteElementsForShift,
+                                             final NoteElement noteElement) {
+        //Stupid MySQL constraint
+        for (NoteElement element : noteElementsForShift) {
+            element.setSortBy(element.getSortBy() * (-1));
+        }
+        noteElement.setSortBy(noteElement.getSortBy() * (-1));
+    }
+
+    /**
+     * Save shift objects to db.
+     *
+     * @param noteElementsForShift  shifted note elements
+     * @param noteElement           note element for new sort by
+     */
+    private void saveNoteElementsForShift(final List<NoteElement> noteElementsForShift, final NoteElement noteElement) {
+        noteElementRepository.save(noteElement);
+        noteElementRepository.save(noteElementsForShift);
+        noteElementRepository.flush();
+    }
+
+    /**
+     * Change sort by values for target note element and shifted note elements.
+     *
+     * @param noteElementsForShift  shifted note elements
+     * @param noteElement           note element with new sort by
+     * @param oldSortBy             old sort by note element value
+     * @param newSortBy             new sort by note element value
+     */
+    private void swapNoteElements(final List<NoteElement> noteElementsForShift, final NoteElement noteElement,
+                                  final Integer oldSortBy, final  Integer newSortBy) {
+        //Swap elements
+        for (int i = 0; i < noteElementsForShift.size() - 1; i++) {
+            Integer itemSortBy = noteElementsForShift.get(i).getSortBy();
+            Integer nextItemSortBy = noteElementsForShift.get(i + 1).getSortBy();
+            noteElementsForShift.get(i).setSortBy(nextItemSortBy * (-1));
+            noteElementsForShift.get(i + 1).setSortBy(itemSortBy);
+        }
+        //Last swap
+        noteElementsForShift.get(noteElementsForShift.size() - 1).setSortBy(oldSortBy);
+        noteElement.setSortBy(newSortBy);
+        noteElement.setLastModified(new Date());
     }
 
     @Override
