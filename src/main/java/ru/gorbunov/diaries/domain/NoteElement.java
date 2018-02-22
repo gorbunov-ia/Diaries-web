@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_NotesElements")
-public class NoteElement extends GeneralEntity {
+public class NoteElement extends GeneralEntity implements Swappable {
 
     /**
      * Note.
@@ -69,10 +69,12 @@ public class NoteElement extends GeneralEntity {
         this.description = description;
     }
 
+    @Override
     public Integer getSortBy() {
         return sortBy;
     }
 
+    @Override
     public void setSortBy(Integer sortBy) {
         this.sortBy = sortBy;
     }
@@ -81,6 +83,7 @@ public class NoteElement extends GeneralEntity {
         return lastModified;
     }
 
+    @Override
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }

@@ -21,7 +21,7 @@ import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
-import ru.gorbunov.diaries.service.helper.NoteElementSwapHelper;
+import ru.gorbunov.diaries.service.helper.SwapHelper;
 
 /**
  * Implementation of service for interaction with note elements.
@@ -88,7 +88,7 @@ public class NoteElementServiceImpl implements NoteElementService {
             if (noteElementsForShift.isEmpty()) {
                 throw new SwapElementException();
             }
-            NoteElementSwapHelper swapHelper = new NoteElementSwapHelper(noteElementsForShift, noteElement, sortBy);
+            SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement, sortBy);
             return swapHelper.swap(noteElementRepository);
         } catch (Exception e) {
             log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
