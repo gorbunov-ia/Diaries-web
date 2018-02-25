@@ -11,6 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import ru.gorbunov.diaries.controller.dto.NoteElementDto;
+import ru.gorbunov.diaries.controller.vm.SortElementVm;
+import ru.gorbunov.diaries.domain.Movable;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.User;
@@ -220,6 +223,80 @@ public class NoteElementServiceTest {
     private void mockNoteElementFindAll(List<NoteElement> noteElements) {
         Mockito.when(noteElementRepository.findAll(Mockito.any(Specification.class), Mockito.any(Sort.class)))
                 .thenReturn(noteElements);
+    }
+
+    /**
+     * Check fill sort element to empty list of movables.
+     */
+    @Test
+    public void testEmptyFillSortElement() {
+        //no exception
+        service.fillSortElement(Collections.emptyList());
+    }
+
+    /**
+     * Check fill sort element to list of one movable.
+     */
+    @Test
+    public void testOneElementFillSortElement() {
+        final int initialSortBy = 10;
+        final Movable movable = createMovableWithSortBy(initialSortBy);
+
+        service.fillSortElement(Collections.singletonList(movable));
+
+        checkSortElementVm(movable.getSortElementVm(), initialSortBy, initialSortBy, initialSortBy, initialSortBy);
+    }
+
+    /**
+     * Check fill sort element to full list of movable.
+     */
+    @Test
+    public void testFullFillSortElement() {
+        final int firstSortBy = 50;
+        final Movable firstMovable = createMovableWithSortBy(firstSortBy);
+        final int secondSortBy = 40;
+        final Movable secondMovable = createMovableWithSortBy(secondSortBy);
+        final int thirdSortBy = 20;
+        final Movable thirdMovable = createMovableWithSortBy(thirdSortBy);
+        final int fourthSortBy = 10;
+        final Movable fourthMovable = createMovableWithSortBy(fourthSortBy);
+
+        service.fillSortElement(Arrays.asList(firstMovable, secondMovable, thirdMovable, fourthMovable));
+
+        checkSortElementVm(firstMovable.getSortElementVm(), firstSortBy, firstSortBy, secondSortBy, fourthSortBy);
+        checkSortElementVm(secondMovable.getSortElementVm(), firstSortBy, firstSortBy, thirdSortBy, fourthSortBy);
+        checkSortElementVm(thirdMovable.getSortElementVm(), firstSortBy, secondSortBy, fourthSortBy, fourthSortBy);
+        checkSortElementVm(fourthMovable.getSortElementVm(), firstSortBy, thirdSortBy, fourthSortBy, fourthSortBy);
+    }
+
+    /**
+     * Method to create Movable element and set sort by value.
+     *
+     * @param sortBy sorting value
+     * @return movable object
+     */
+    private Movable createMovableWithSortBy(final int sortBy) {
+        final NoteElementDto result = new NoteElementDto();
+        result.setSortBy(sortBy);
+        return result;
+    }
+
+    /**
+     * Method to check sort element.
+     *
+     * @param sortElementVm target to check
+     * @param first first value of target
+     * @param prev prev value of target
+     * @param next next value of target
+     * @param last last value of target
+     */
+    private void checkSortElementVm(SortElementVm sortElementVm, int first, int prev, int next, int last) {
+        Assert.assertNotNull(sortElementVm);
+        Assert.assertEquals(sortElementVm.getFirst().intValue(), first);
+        Assert.assertEquals(sortElementVm.getPrev().intValue(), prev);
+        Assert.assertEquals(sortElementVm.getNext().intValue(), next);
+        Assert.assertEquals(sortElementVm.getLast().intValue(), last);
+
     }
 
 }
