@@ -8,6 +8,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -116,19 +117,24 @@ public class NoteElementServiceImpl implements NoteElementService {
      * @return              list of note elements
      */
     private List<NoteElement> getNoteElementsForShift(final NoteElement noteElement, final Integer newSortBy) {
-        Specification<NoteElement> spec = noteElementSpecification.byNote(noteElement.getNote().getId());
+        final Integer sortByFirst;
+        final Integer sortByLast;
+        final Sort.Direction sortDirection;
         if (noteElement.getSortBy() <= newSortBy) {
             //Up order
-            spec = Specifications.where(spec)
-                    .and(noteElementSpecification.byRangeSortBy(noteElement.getSortBy() + 1, newSortBy))
-                    .and(noteElementSpecification.orderBy("sortBy", true));
+            sortByFirst = noteElement.getSortBy() + 1;
+            sortByLast = newSortBy;
+            sortDirection = Sort.Direction.DESC;
         } else {
             //Down order
-            spec = Specifications.where(spec)
-                    .and(noteElementSpecification.byRangeSortBy(newSortBy, noteElement.getSortBy() - 1))
-                    .and(noteElementSpecification.orderBy("sortBy", false));
+            sortByFirst = newSortBy;
+            sortByLast = noteElement.getSortBy() - 1;
+            sortDirection = Sort.Direction.ASC;
         }
-        return noteElementRepository.findAll(spec);
+        final Specification<NoteElement> spec = Specifications
+                .where(noteElementSpecification.byNote(noteElement.getNote().getId()))
+                .and(noteElementSpecification.byRangeSortBy(sortByFirst, sortByLast));
+        return noteElementRepository.findAll(spec, new Sort(new Sort.Order(sortDirection, "sortBy")));
     }
 
     @Override
@@ -178,6 +184,7 @@ public class NoteElementServiceImpl implements NoteElementService {
             return Collections.emptyList();
         }
         return noteElementRepository.findAll(Specifications.where(noteElementSpecification.byUser(user))
-                .and(noteElementSpecification.byNote(noteId)).and(noteElementSpecification.orderBy(field, isDesc)));
+                .and(noteElementSpecification.byNote(noteId)), new Sort(
+                        new Sort.Order(noteElementSpecification.getDirection(isDesc), field)));
     }
 }

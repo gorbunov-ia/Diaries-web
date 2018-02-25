@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import ru.gorbunov.diaries.domain.Note;
@@ -217,7 +218,7 @@ public class NoteElementServiceTest {
      * @param noteElements list of note element mocks
      */
     private void mockNoteElementFindAll(List<NoteElement> noteElements) {
-        Mockito.when(noteElementRepository.findAll(Mockito.any(Specification.class)))
+        Mockito.when(noteElementRepository.findAll(Mockito.any(Specification.class), Mockito.any(Sort.class)))
                 .thenReturn(noteElements);
     }
 

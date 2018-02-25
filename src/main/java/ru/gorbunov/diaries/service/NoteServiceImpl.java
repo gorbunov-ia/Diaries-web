@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +56,8 @@ public class NoteServiceImpl implements NoteService {
         if (user == null) {
             return Collections.emptyList();
         }
-        return noteRepository.findAll(Specifications.where(noteSpecification.byUser(user))
-                .and(noteSpecification.orderBy(field, isDesc)));
+        return noteRepository.findAll(Specifications.where(noteSpecification.byUser(user)),
+                new Sort(new Sort.Order(noteSpecification.getDirection(isDesc), field)));
     }
 
     @Override

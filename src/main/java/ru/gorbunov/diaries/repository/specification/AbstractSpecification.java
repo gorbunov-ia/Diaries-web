@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.repository.specification;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import ru.gorbunov.diaries.domain.GeneralEntity;
@@ -32,20 +33,15 @@ public abstract class AbstractSpecification<T extends GeneralEntity> {
     }
 
     /**
-     * Method add "order by" statement to the query.
+     * Method return Sort.Direction object for boolean sorting flag.
      *
-     * @param field     field for sort
-     * @param isDesc    asc or desc order
-     * @return          specification for query to the T
+     * @param isDesc sorting flag
+     * @return sorting object
      */
-    public Specification<T> orderBy(final String field, final boolean isDesc) {
-        return (root, cq, cb) -> {
-            if (isDesc) {
-                cq.orderBy(cb.desc(root.get(field)));
-            } else {
-                cq.orderBy(cb.asc(root.get(field)));
-            }
-            return cb.conjunction();
-        };
+    public Sort.Direction getDirection(boolean isDesc) {
+        if (isDesc) {
+            return Sort.Direction.DESC;
+        }
+        return Sort.Direction.ASC;
     }
 }
