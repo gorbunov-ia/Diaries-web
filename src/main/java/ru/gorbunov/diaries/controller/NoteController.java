@@ -1,20 +1,21 @@
 package ru.gorbunov.diaries.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
-import ru.gorbunov.diaries.repository.NoteRepository;
-import ru.gorbunov.diaries.repository.specification.NoteSpecification;
+import ru.gorbunov.diaries.service.NoteService;
 
 /**
  * Controller for notes page.
@@ -31,25 +32,24 @@ public class NoteController {
     private final Logger log = LoggerFactory.getLogger(NoteController.class);
 
     /**
-     * Repository for Note.
+     * Service for interaction with notes.
      */
-    private final NoteRepository noteRepository;
+    private final NoteService noteService;
 
     /**
-     * Specification for Note.
+     * A service interface for type conversion.
      */
-    private final NoteSpecification noteSpecification;
+    private final ConversionService conversionService;
 
     /**
      * Base constructor.
      *
-     * @param noteRepository     repository for crud operation with db
-     * @param noteSpecification  specification for add condition into query to db
+     * @param noteService service for interaction with notes.
+     * @param conversionService Spring conversion service
      */
-    public NoteController(final NoteRepository noteRepository,
-                          final NoteSpecification noteSpecification) {
-        this.noteRepository = noteRepository;
-        this.noteSpecification = noteSpecification;
+    public NoteController(final NoteService noteService, ConversionService conversionService) {
+        this.noteService = noteService;
+        this.conversionService = conversionService;
     }
 
     /**
@@ -71,10 +71,10 @@ public class NoteController {
     @GetMapping
     public String getAllNotes(ModelMap model) {
         log.debug("REST request to get Notes.");
-        final List<Note> notes = noteRepository.findAll(Specifications
-                .where(noteSpecification.byUser())
-                .and(noteSpecification.orderBy("lastModified", true)));
-        model.addAttribute("notes", notes);
+        final List<Note> notes = noteService.getUserNotesWithSort("lastModified", true);
+        List<NoteDto> notesDto = notes.stream().map(note -> conversionService.convert(note, NoteDto.class))
+                .collect(Collectors.toList());
+        model.addAttribute("notes", notesDto);
         return "notes";
     }
 

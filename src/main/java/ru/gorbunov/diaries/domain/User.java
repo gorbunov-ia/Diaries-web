@@ -1,17 +1,11 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -28,14 +22,7 @@ import org.hibernate.validator.constraints.Email;
  */
 @Entity
 @Table(name = "t_Users")
-public class User implements Serializable {
-
-    /**
-     * Id entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class User extends GeneralEntity {
 
     /**
      * User login.
@@ -48,7 +35,6 @@ public class User implements Serializable {
     /**
      * Hash of user password.
      */
-    @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "Pswrd", nullable = false, length = 60)
@@ -59,7 +45,7 @@ public class User implements Serializable {
      */
     @NotNull
     @Email
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String email;
 
     /**
@@ -70,20 +56,11 @@ public class User implements Serializable {
     /**
      * Roles of user.
      */
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "t_UsersRoles",
         joinColumns = {@JoinColumn(name = "UserID", referencedColumnName = "ID")},
         inverseJoinColumns = {@JoinColumn(name = "RoleID", referencedColumnName = "ID")})
     private Set<Role> roles = new HashSet<>();
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getLogin() {
         return login;
@@ -128,7 +105,7 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(getId());
         return hash;
     }
 
@@ -144,7 +121,7 @@ public class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(getId(), other.getId());
     }
 
 }

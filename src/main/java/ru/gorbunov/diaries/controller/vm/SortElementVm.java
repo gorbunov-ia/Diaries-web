@@ -7,7 +7,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
  *
  * @author Gorbunov.ia
  */
-public class SortElementVM {
+public class SortElementVm {
 
     /**
      * Sort by field first note element on page.
@@ -45,12 +45,40 @@ public class SortElementVM {
         this.prev = prev;
     }
 
+    /**
+     * Method to help calculate index shift for prev element in list.
+     *
+     * @param index     index in list for current element
+     * @param listSize  list.size()
+     * @return          index shift
+     */
+    public int getPrevIndexShift(int index, int listSize) {
+        if (listSize == 1 || index == 0) {
+            return 0;
+        }
+        return index - 1;
+    }
+
     public Integer getNext() {
         return next;
     }
 
     public void setNext(Integer next) {
         this.next = next;
+    }
+
+    /**
+     * Method to help calculate index shift for next element in list.
+     *
+     * @param index     index in list for current element
+     * @param listSize  list.size()
+     * @return          index shift
+     */
+    public int getNextIndexShift(int index, int listSize) {
+        if (listSize == 1 || index == listSize - 1) {
+            return listSize - 1;
+        }
+        return index + 1;
     }
 
     public MutableInt getLast() {
@@ -60,4 +88,5 @@ public class SortElementVM {
     public void setLast(MutableInt last) {
         this.last = last;
     }
+
 }

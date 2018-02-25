@@ -1,18 +1,11 @@
 package ru.gorbunov.diaries.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,20 +22,11 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "t_Notes")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Note implements Serializable {
-
-    /**
-     * Id entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Note extends GeneralEntity {
 
     /**
      * Owner of a note.
      */
-    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID", nullable = false)
     private User user = null;
@@ -66,14 +50,6 @@ public class Note implements Serializable {
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;
@@ -110,7 +86,7 @@ public class Note implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(getId());
         return hash;
     }
 
@@ -126,10 +102,7 @@ public class Note implements Serializable {
             return false;
         }
         final Note other = (Note) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getId(), other.getId());
     }
 
 }
