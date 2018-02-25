@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.security;
 
-import ru.gorbunov.diaries.exception.UserNotActivatedException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -17,30 +16,46 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.gorbunov.diaries.exception.UserNotActivatedException;
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.repository.UserRepository;
+import ru.gorbunov.diaries.service.UserService;
 
 /**
+ * Implementation of service for interaction with User Details.
  *
  * @author Gorbunov.ia
  */
 @Component("userDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
-private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
+    /**
+     * Logger for class.
+     */
+    private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
-    private final UserRepository userRepository;
+    /**
+     * Service for interaction with user.
+     */
+    private final UserService userService;
 
-    public DomainUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    /**
+     * Base constructor.
+     *
+     * @param userService service for interaction with user
+     */
+    public DomainUserDetailsService(final UserService userService) {
+        this.userService = userService;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userFromDatabase = Optional.ofNullable(userRepository.findOneByLogin(lowercaseLogin));
+        Optional<User> userFromDatabase = Optional.ofNullable(userService.getUserByLogin(lowercaseLogin));
         return userFromDatabase.map(user -> {
             if (!user.getIsActive()) {
                 throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
@@ -51,8 +66,8 @@ private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.clas
             return new org.springframework.security.core.userdetails.User(lowercaseLogin,
                 user.getPassword(),
                 grantedAuthorities);
-        }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin 
+        }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin
                 + " was not found in the database"));
     }
-    
+
 }

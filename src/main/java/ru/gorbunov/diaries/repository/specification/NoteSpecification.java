@@ -1,62 +1,34 @@
 package ru.gorbunov.diaries.repository.specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.service.UserService;
 
+/**
+ * Specification for add condition to the notes into query to db.
+ *
+ * @author Gorbunov.ia
+ */
 @Service
-public final class NoteSpecification {    
-       
-    private final UserService userService;
-    
-    public NoteSpecification(UserService userService) {
-        this.userService = userService;
-    }
+public final class NoteSpecification extends AbstractSpecification<Note> {
 
-    public Specification<Note> byUser() {
-        return new Specification<Note>() {            
-            @Override
-            public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                User user = userService.getUser();
-                
-                if (user != null) {
-                    return cb.equal(root.get("user"), user);                        
-                } else {
-                    return cb.disjunction();
-                }                
+    /**
+     * Create user condition to the query.
+     *
+     * @param user object
+     * @return specification for query to the user
+     */
+    @Override
+    public Specification<Note> byUser(User user) {
+        return (root, cq, cb) -> {
+            if (user != null) {
+                return cb.equal(root.get("user"), user);
+            } else {
+                return cb.disjunction();
             }
         };
     }
 
-    public Specification<Note> byId(Integer id) {
-        return new Specification<Note>() {            
-            @Override
-            public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {                
-                return cb.equal(root.get("id"), id);
-            }
-        };
-    }
-
-    public Specification<Note> orderBy(String field, boolean isDesc) {
-        return new Specification<Note>() {
-            @Override
-            public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                if (isDesc) {
-                    cq.orderBy(cb.desc(root.get(field)));
-                } else {
-                    cq.orderBy(cb.asc(root.get(field)));
-                }
-                return cb.conjunction();
-            }
-        };
-    }
-    
 }

@@ -15,24 +15,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
+ * Configuration for Spring Security.
  *
  * @author Gorbunov.ia
  */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
+    /**
+     * {@link org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder}.
+     */
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    private final UserDetailsService userDetailsService;    
-    
-    public WebSecurityConfig(UserDetailsService userDetailsService,
-            AuthenticationManagerBuilder authenticationManagerBuilder) {
+    /**
+     * Implementation of service for interaction with User Details.
+     */
+    private final UserDetailsService userDetailsService;
 
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
+    /**
+     * Base constructor.
+     *
+     * @param userDetailsService            service for interaction with user details
+     * @param authenticationManagerBuilder  spring authentication manager builder
+     */
+    public WebSecurityConfig(final UserDetailsService userDetailsService,
+                             final AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.userDetailsService = userDetailsService;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
+    /**
+     * Initialization.
+     */
     @PostConstruct
     public void init() {
         try {
@@ -43,9 +58,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             throw new BeanInitializationException("Security configuration failed", e);
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void configure(HttpSecurity http) throws Exception { 
+    protected void configure(final HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
                 .antMatchers("/", "/home", "/js/**", "/css/**", "/fonts/**").permitAll()
@@ -61,10 +79,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf()
 //                .disable();
     }
-    
+
+    /**
+     * Bean for get password hash.
+     *
+     * @return bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
 }

@@ -6,11 +6,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
+ * Utils for interaction with authentication.
  *
  * @author Gorbunov.ia
  */
 public final class SecurityUtils {
-    
+
+    /**
+     * Util class.
+     */
     private SecurityUtils() {
     }
 
@@ -32,6 +36,6 @@ public final class SecurityUtils {
             }
         }
         return userName;
-    }    
-    
+    }
+
 }

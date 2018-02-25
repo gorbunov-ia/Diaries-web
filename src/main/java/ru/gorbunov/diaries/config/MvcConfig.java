@@ -5,17 +5,18 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
+ * Configuration Spring MVC.
  *
  * @author Gorbunov.ia
  */
 @Configuration
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        //registry.addViewController("/home").setViewName("home");
-        //registry.addViewController("/").setViewName("home");        
-        //registry.addViewController("/hello").setViewName("hello");
+    public void addViewControllers(final ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }
 
