@@ -139,37 +139,26 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     public void fillSortElement(final List<? extends Movable> movables) {
+        if (movables == null || movables.isEmpty()) {
+            return;
+        }
+        final int initialValueSortBy = -1;
         MutableInt first = new MutableInt();
         MutableInt last = new MutableInt();
-        int maxSortBy = -1;
-        int minSortBy = -1;
+        int maxSortBy = initialValueSortBy;
+        int minSortBy = initialValueSortBy;
         for (int i = 0; i < movables.size(); i++) {
             Movable element = movables.get(i);
             SortElementVm sort = new SortElementVm();
             element.setSortElementVm(sort);
             sort.setFirst(first);
+            sort.setPrev(movables.get(sort.getPrevIndexShift(i, movables.size())).getSortBy());
+            sort.setNext(movables.get(sort.getNextIndexShift(i, movables.size())).getSortBy());
             sort.setLast(last);
-            if (movables.size() == 1) {
-                sort.setPrev(element.getSortBy());
-                sort.setNext(element.getSortBy());
-                minSortBy = element.getSortBy();
-                maxSortBy = element.getSortBy();
-                break;
-            }
-            if (i == 0) {
-                sort.setPrev(element.getSortBy());
-                sort.setNext(movables.get(i + 1).getSortBy());
-            } else if (i == movables.size() - 1) {
-                sort.setPrev(movables.get(i - 1).getSortBy());
-                sort.setNext(element.getSortBy());
-            } else {
-                sort.setPrev(movables.get(i - 1).getSortBy());
-                sort.setNext(movables.get(i + 1).getSortBy());
-            }
-            if (element.getSortBy() > maxSortBy || maxSortBy == -1) {
+            if (element.getSortBy() > maxSortBy || maxSortBy == initialValueSortBy) {
                 maxSortBy = element.getSortBy();
             }
-            if (element.getSortBy() < minSortBy || minSortBy == -1) {
+            if (element.getSortBy() < minSortBy || minSortBy == initialValueSortBy) {
                 minSortBy = element.getSortBy();
             }
         }
