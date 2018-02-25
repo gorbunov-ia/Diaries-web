@@ -2,7 +2,6 @@ package ru.gorbunov.diaries.converters;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
@@ -16,7 +15,6 @@ import java.util.Random;
  *
  * @author Gorbunov.ia
  */
-@SpringBootTest
 public class NoteToNoteDtoConverterTest {
 
     /**

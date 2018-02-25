@@ -29,7 +29,6 @@ import java.util.List;
  *
  * @author Gorbunov.ia
  */
-@SpringBootTest
 public class NoteElementServiceTest {
 
     /**
