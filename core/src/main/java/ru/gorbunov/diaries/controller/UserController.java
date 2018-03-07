@@ -12,6 +12,8 @@ import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.security.SecurityUtils;
 import ru.gorbunov.diaries.service.UserService;
 
+import java.util.Optional;
+
 /**
  * Controller for user page.
  *
@@ -49,12 +51,11 @@ public class UserController {
      */
     @GetMapping(path = "")
     public ResponseEntity<UserDto> getCurrentUser() {
-        //todo: logs
-        User user = userService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
-        if (user == null) {
+        Optional<User> user = userService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
+        if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        UserDto result = conversionService.convert(user, UserDto.class);
+        UserDto result = conversionService.convert(user.get(), UserDto.class);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

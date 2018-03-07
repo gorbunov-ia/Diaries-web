@@ -10,6 +10,8 @@ import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.repository.UserRepository;
 import ru.gorbunov.diaries.security.SecurityUtils;
 
+import java.util.Optional;
+
 /**
  * Implementation of service for interaction with user.
  *
@@ -41,7 +43,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Transactional(readOnly = true)
-    public User getUserByLogin(final String login) {
+    public Optional<User> getUserByLogin(final String login) {
         return userRepository.findOneByLogin(login);
     }
 
@@ -49,15 +51,15 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Transactional(readOnly = true)
-    public User getUser(final Integer id) {
-        return userRepository.findOne(id);
+    public Optional<User> getUser(final Integer id) {
+        return userRepository.findById(id);
     }
 
     /**
      * {@inheritDoc}
      */
     @Transactional(readOnly = true)
-    public User getUser() {
+    public Optional<User> getUser() {
         return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     }
 

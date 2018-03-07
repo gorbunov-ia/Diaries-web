@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import ru.gorbunov.diaries.domain.User;
 
+import java.util.Optional;
+
 /**
  * Interface for generic CRUD operations with User.
  *
@@ -21,9 +23,9 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      * @return      user object
      */
     @EntityGraph(attributePaths = "roles")
-    User findOneByLogin(String login);
+    Optional<User> findOneByLogin(String login);
 
     @EntityGraph(attributePaths = "roles")
     @Override
-    User findOne(Integer id);
+    Optional<User> findById(Integer id);
 }

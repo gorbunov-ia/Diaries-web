@@ -130,7 +130,7 @@ public class SwapHelper<T extends Swappable> {
      */
     private void saveSwapElementsForShift(final JpaRepository<T, ? extends Serializable> swapElementRepository) {
         swapElementRepository.save(swapElement);
-        swapElementRepository.save(swapElementsForShift);
+        swapElementRepository.saveAll(swapElementsForShift);
         swapElementRepository.flush();
     }
 

@@ -2,6 +2,7 @@ package ru.gorbunov.diaries.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,31 +69,31 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
-    public NoteElement changeSortBy(final Integer noteElementId, final Integer sortBy) {
+    public Optional<NoteElement> changeSortBy(final Integer noteElementId, final Integer sortBy) {
         if (noteElementId == null || sortBy == null) {
             throw new IllegalArgumentException("Arguments must be not null.");
         }
-        final User user = userService.getUser();
-        if (user == null) {
-            return null;
+        final Optional<User> user = userService.getUser();
+        if (!user.isPresent()) {
+            return Optional.empty();
         }
         try {
-            final NoteElement noteElement = getNoteElementByIdAndUser(noteElementId, user);
-            if (noteElement == null) {
+            final Optional<NoteElement> noteElement = getNoteElementByIdAndUser(noteElementId, user.get());
+            if (!noteElement.isPresent()) {
                 throw new SwapElementException();
             }
-            if (noteElement.getSortBy().equals(sortBy)) {
+            if (noteElement.get().getSortBy().equals(sortBy)) {
                 return noteElement;
             }
-            final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement, sortBy);
+            final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement.get(), sortBy);
             if (noteElementsForShift.isEmpty()) {
                 throw new SwapElementException();
             }
-            SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement, sortBy);
-            return swapHelper.swap(noteElementRepository);
+            SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement.get(), sortBy);
+            return Optional.of(swapHelper.swap(noteElementRepository));
         } catch (Exception e) {
             log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -104,8 +104,8 @@ public class NoteElementServiceImpl implements NoteElementService {
      * @param user          note owner
      * @return              note element
      */
-    private NoteElement getNoteElementByIdAndUser(final Integer noteElementId, final User user) {
-        return noteElementRepository.findOne(Specifications.where(noteElementSpecification.byUser(user))
+    private Optional<NoteElement> getNoteElementByIdAndUser(final Integer noteElementId, final User user) {
+        return noteElementRepository.findOne(Specification.where(noteElementSpecification.byUser(user))
                 .and(noteElementSpecification.byId(noteElementId)));
     }
 
@@ -131,10 +131,10 @@ public class NoteElementServiceImpl implements NoteElementService {
             sortByLast = noteElement.getSortBy() - 1;
             sortDirection = Sort.Direction.ASC;
         }
-        final Specification<NoteElement> spec = Specifications
+        final Specification<NoteElement> spec = Specification
                 .where(noteElementSpecification.byNote(noteElement.getNote().getId()))
                 .and(noteElementSpecification.byRangeSortBy(sortByFirst, sortByLast));
-        return noteElementRepository.findAll(spec, new Sort(new Sort.Order(sortDirection, "sortBy")));
+        return noteElementRepository.findAll(spec, Sort.by(new Sort.Order(sortDirection, "sortBy")));
     }
 
     @Override
@@ -168,12 +168,11 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     public List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc) {
-        final User user = userService.getUser();
-        if (user == null) {
-            return Collections.emptyList();
-        }
-        return noteElementRepository.findAll(Specifications.where(noteElementSpecification.byUser(user))
-                .and(noteElementSpecification.byNote(noteId)), new Sort(
-                        new Sort.Order(noteElementSpecification.getDirection(isDesc), field)));
+        return userService.getUser()
+                .map(user -> noteElementRepository.findAll(Specification
+                        .where(noteElementSpecification.byUser(user))
+                        .and(noteElementSpecification.byNote(noteId)),
+                        Sort.by(new Sort.Order(noteElementSpecification.getDirection(isDesc), field))))
+                .orElseGet(Collections::emptyList);
     }
 }

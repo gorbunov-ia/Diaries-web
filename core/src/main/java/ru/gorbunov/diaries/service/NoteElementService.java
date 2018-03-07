@@ -4,6 +4,7 @@ import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for interaction with note elements.
@@ -20,7 +21,7 @@ public interface NoteElementService {
      * @return              note element with new sort by
      * @throws              IllegalArgumentException if arguments contains null
      */
-    NoteElement changeSortBy(Integer noteElementId, Integer sortBy);
+    Optional<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
 
     /**
      * Add sortElementVm (helper on UI) to each note element.

@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -23,6 +22,7 @@ import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Test for NoteElementServiceImpl class.
@@ -91,7 +91,7 @@ public class NoteElementServiceTest {
     public void testWithoutUserChangeSortBy() {
         //mockUser();
         mockNoteElementFindOne(getNoteElementForTest());
-        Assert.assertNull(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY));
+        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
     }
 
     /**
@@ -100,7 +100,7 @@ public class NoteElementServiceTest {
     @Test
     public void testNotFoundNoteElementChangeSortBy() {
         mockUser();
-        Assert.assertNull(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY));
+        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
     }
 
     /**
@@ -129,7 +129,7 @@ public class NoteElementServiceTest {
         NoteElement noteElement = getNoteElementForTest();
         mockNoteElementFindOne(noteElement);
 
-        Assert.assertNull(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY));
+        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
         Assert.assertEquals(noteElement.getSortBy(), OLD_SORT_BY);
     }
 
@@ -147,11 +147,12 @@ public class NoteElementServiceTest {
         previous.setSortBy(NEW_SORT_BY);
         mockNoteElementFindAll(Collections.singletonList(previous));
 
-        NoteElement result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY);
+        Optional<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY);
 
+        Assert.assertTrue(result.isPresent());
         Assert.assertEquals(noteElement.getSortBy(), NEW_SORT_BY);
-        Assert.assertEquals(result.getSortBy(), NEW_SORT_BY);
-        Assert.assertEquals(noteElement, result);
+        Assert.assertEquals(result.get().getSortBy(), NEW_SORT_BY);
+        Assert.assertEquals(noteElement, result.get());
         Assert.assertEquals(previous.getSortBy(), OLD_SORT_BY);
     }
 
@@ -172,11 +173,12 @@ public class NoteElementServiceTest {
         next.setSortBy(NEW_NEXT_SORT_BY);
         mockNoteElementFindAll(Arrays.asList(next, middle));
 
-        NoteElement result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_NEXT_SORT_BY);
+        Optional<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_NEXT_SORT_BY);
 
+        Assert.assertTrue(result.isPresent());
         Assert.assertEquals(noteElement.getSortBy(), NEW_NEXT_SORT_BY);
-        Assert.assertEquals(result.getSortBy(), NEW_NEXT_SORT_BY);
-        Assert.assertEquals(noteElement, result);
+        Assert.assertEquals(result.get().getSortBy(), NEW_NEXT_SORT_BY);
+        Assert.assertEquals(noteElement, result.get());
 
         Assert.assertEquals(middle.getSortBy(), OLD_NEXT_SORT_BY);
         Assert.assertEquals(next.getSortBy(), MIDDLE_NEXT_SORT_BY);
@@ -186,7 +188,7 @@ public class NoteElementServiceTest {
      * Mock get user method.
      */
     private void mockUser() {
-        Mockito.when(userService.getUser()).thenReturn(new User());
+        Mockito.when(userService.getUser()).thenReturn(Optional.of(new User()));
     }
 
     /**
@@ -196,7 +198,7 @@ public class NoteElementServiceTest {
      */
     private void mockNoteElementFindOne(NoteElement noteElement) {
         Mockito.when(noteElementRepository.findOne(Mockito.any(Specification.class)))
-                .thenReturn(noteElement);
+                .thenReturn(Optional.of(noteElement));
     }
 
     /**

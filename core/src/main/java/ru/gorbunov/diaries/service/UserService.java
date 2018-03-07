@@ -2,6 +2,8 @@ package ru.gorbunov.diaries.service;
 
 import ru.gorbunov.diaries.domain.User;
 
+import java.util.Optional;
+
 /**
  * Service for interaction with user.
  *
@@ -15,7 +17,7 @@ public interface UserService {
      * @param login user login in db
      * @return      user object
      */
-    User getUserByLogin(String login);
+    Optional<User> getUserByLogin(String login);
 
     /**
      * Method get user by id.
@@ -23,13 +25,13 @@ public interface UserService {
      * @param id    user id in db
      * @return      user object
      */
-    User getUser(Integer id);
+    Optional<User> getUser(Integer id);
 
     /**
      * Method get current authenticated user.
      *
      * @return user object
      */
-    User getUser();
+    Optional<User> getUser();
 
 }

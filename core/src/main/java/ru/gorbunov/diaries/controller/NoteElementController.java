@@ -1,6 +1,7 @@
 package ru.gorbunov.diaries.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -80,11 +81,11 @@ public class NoteElementController {
     public String getAllNoteElements(@PathVariable final Integer noteId, ModelMap model) {
         log.debug("REST request to get NotesElements.");
 
-        final Note note = noteService.getUserNoteById(noteId);
-        if (note == null) {
+        final Optional<Note> note = noteService.getUserNoteById(noteId);
+        if (!note.isPresent()) {
             throw new ResourceNotFoundException();
         }
-        final List<NoteElement> notesElements = noteElementService.getUserNoteElementsByNoteWithSort(note.getId(),
+        final List<NoteElement> notesElements = noteElementService.getUserNoteElementsByNoteWithSort(note.get().getId(),
                 "sortBy", true);
         if (notesElements.isEmpty()) {
             return "notes-elements";
@@ -94,7 +95,7 @@ public class NoteElementController {
                 .collect(Collectors.toList());
         noteElementService.fillSortElement(notesElementsDto);
 
-        model.addAttribute("note", conversionService.convert(note, NoteDto.class));
+        model.addAttribute("note", conversionService.convert(note.get(), NoteDto.class));
         model.addAttribute("notesElements", notesElementsDto);
         return "notes-elements";
     }
@@ -129,10 +130,10 @@ public class NoteElementController {
         if (noteElementId == null || sortBy == null) {
             throw new BadRequestException();
         }
-        NoteElement element = noteElementService.changeSortBy(noteElementId, sortBy);
+        Optional<NoteElement> element = noteElementService.changeSortBy(noteElementId, sortBy);
 
-        if (element != null) {
-            return "redirect:/notes-elements/" + element.getNote().getId();
+        if (element.isPresent()) {
+            return "redirect:/notes-elements/" + element.get().getNote().getId();
         } else {
             throw new BadRequestException();
         }

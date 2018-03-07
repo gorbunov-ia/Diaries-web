@@ -3,6 +3,7 @@ package ru.gorbunov.diaries.service;
 import ru.gorbunov.diaries.domain.Note;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for interaction with notes.
@@ -26,5 +27,5 @@ public interface NoteService {
      * @param noteId note id in db
      * @return note entity or null if note id does not exist for current user
      */
-    Note getUserNoteById(Integer noteId);
+    Optional<Note> getUserNoteById(Integer noteId);
 }
