@@ -13,8 +13,10 @@
 
     <modules>
 		<module>core</module>
+		<!--
         <module>web</module>
         <module>integration-test</module>
+        -->
 	</modules>
 
 </project>
