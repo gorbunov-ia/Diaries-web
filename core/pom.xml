@@ -129,6 +129,12 @@
         </profile>
         <profile>
             <id>prod</id>
+            <activation>
+                <!-- Heroku detect-->
+                <property>
+                    <name>env.DYNO</name>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
