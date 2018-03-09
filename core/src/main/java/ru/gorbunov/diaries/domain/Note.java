@@ -42,6 +42,7 @@ public class Note extends GeneralEntity {
     /**
      * Sorting order.
      */
+    @Column(nullable = false)
     private Integer sortBy = 0;
 
     /**

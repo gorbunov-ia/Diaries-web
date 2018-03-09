@@ -129,11 +129,16 @@
         </profile>
         <profile>
             <id>prod</id>
+            <activation>
+                <!-- Heroku detect-->
+                <property>
+                    <name>env.DYNO</name>
+                </property>
+            </activation>
             <dependencies>
-                <!-- Use MySQL Connector-J -->
                 <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
                 </dependency>
             </dependencies>
             <properties>
