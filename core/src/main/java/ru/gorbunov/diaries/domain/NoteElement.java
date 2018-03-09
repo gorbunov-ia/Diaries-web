@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,7 +22,9 @@ import javax.validation.constraints.Size;
  * @author Gorbunov.ia
  */
 @Entity
-@Table(name = "t_NotesElements")
+@Table(name = "t_NotesElements", uniqueConstraints = {
+        @UniqueConstraint(name = "UIX_NoteElement_NoteID_SortBy", columnNames = {"NoteID", "SortBy"})
+})
 public class NoteElement extends GeneralEntity implements Swappable {
 
     /**
@@ -43,12 +46,12 @@ public class NoteElement extends GeneralEntity implements Swappable {
     /**
      * Sorting order.
      */
+    @Column(nullable = false)
     private Integer sortBy = 0;
 
     /**
      * Date of Last Modified.
      */
-    //@Basic(optional = false)
     @Column(name = "LastModified", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
