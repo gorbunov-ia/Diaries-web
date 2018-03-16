@@ -1,17 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Открыть навигацию">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav ml-auto">
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'home'}" href="#">Главная <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'notes'}" href="#/notes">Заметки</a>
-      <a class="nav-item nav-link" href="#/login"><span class="oi oi-account-login"></span>&nbsp;Вход</a>
-      <a class="nav-item nav-link" href="#" onclick="$('#logout-form').submit();"><span class="oi oi-account-logout"></span>&nbsp;Выход</a>
-      <form style="visibility: hidden" id="logout-form" method="post" action="#/logout"></form>
-    </div>
-  </div>
-</nav>
+<app-header></app-header>
 
 <div class="container">
   <div class="row justify-content-center">
