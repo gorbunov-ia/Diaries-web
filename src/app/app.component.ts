@@ -6,8 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title: String = 'app work';
-  year: number = (new Date).getFullYear();
-  module: String = 'home';
-  isAuthenticated: Boolean = true;
+  title: String = 'Diaries';
 }
