@@ -29,3 +29,15 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948;
+}
+
+.ng-dirty.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442;
+}
+
+.ng-touched.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442;
+}
