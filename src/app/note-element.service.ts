@@ -7,7 +7,7 @@ export class NoteElementService {
 
   constructor() { }
 
-  getNoteElements(): NoteElement[] {
+  getNoteElements(noteId: number): NoteElement[] {
     return ELEMENTS;
   }
 

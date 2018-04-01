@@ -11,4 +11,13 @@ export class NoteService {
     return NOTES;
   }
 
+  getNote(id: number): Note {
+    NOTES.forEach(note => {
+      if (note.id === id) {
+        return note;
+      }
+    });
+    return null;
+  }
+
 }

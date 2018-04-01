@@ -14,6 +14,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { NoteComponent } from './note/note.component';
+import { NoteElementComponent } from './note-element/note-element.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NoteComponent } from './note/note.component';
     HeaderComponent,
     HomeComponent,
     AuthComponent,
-    NoteComponent
+    NoteComponent,
+    NoteElementComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,8 @@ import { NoteComponent } from './note/note.component';
   ],
   providers: [
     AuthService,
-    NoteService
+    NoteService,
+    NoteElementService
   ],
   bootstrap: [AppComponent]
 })
