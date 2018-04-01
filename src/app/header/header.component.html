@@ -4,12 +4,12 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav ml-auto">
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'home'}" href="#">Главная <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'notes'}" href="#/notes">Заметки</a>
-      <a *ngIf="!isAuthenticated()" class="nav-item nav-link" href="#">
+      <a class="nav-item nav-link" [ngClass]="{'active':module === 'home'}" routerLink="/home">Главная <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" [ngClass]="{'active':module === 'notes'}" routerLink="/notes">Заметки</a>
+      <a *ngIf="!isAuthenticated()" class="nav-item nav-link" routerLink="">
         <span class="oi oi-account-login"></span>&nbsp;Вход
       </a>
-      <a *ngIf="isAuthenticated()" class="nav-item nav-link" href="#" (click)="logout()">
+      <a *ngIf="isAuthenticated()" class="nav-item nav-link" routerLink="" (click)="logout()">
         <span class="oi oi-account-logout"></span>&nbsp;Выход
       </a>
     </div>

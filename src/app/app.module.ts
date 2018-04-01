@@ -11,6 +11,7 @@ import { AuthComponent } from './auth/auth.component';
 import { AuthService } from './auth.service';
 import { NoteService } from './note.service';
 import { NoteComponent } from './note/note.component';
+import { AppRoutingModule } from './/app-routing.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { NoteComponent } from './note/note.component';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
   providers: [
     AuthService,

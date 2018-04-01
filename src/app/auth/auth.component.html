@@ -1,4 +1,4 @@
-<div [hidden]="isAuthenticated()">
+<div *ngIf="!isAuthenticated()">
   <div [hidden]="!errorMsg" class="alert alert-danger" role="alert">
     Неверный логин или пароль
   </div>
