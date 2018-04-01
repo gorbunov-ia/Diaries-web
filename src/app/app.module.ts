@@ -9,6 +9,8 @@ import { HomeComponent } from './home/home.component';
 import { AuthComponent } from './auth/auth.component';
 
 import { AuthService } from './auth.service';
+import { NoteService } from './note.service';
+import { NoteComponent } from './note/note.component';
 
 @NgModule({
   declarations: [
@@ -16,14 +18,16 @@ import { AuthService } from './auth.service';
     FooterComponent,
     HeaderComponent,
     HomeComponent,
-    AuthComponent
+    AuthComponent,
+    NoteComponent
   ],
   imports: [
     BrowserModule,
     FormsModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    NoteService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,10 @@
+<h1>Список заметок</h1>
+<div class="list-group">
+    <!-- href="@{'/notes-elements/' + ${note.id}}"	 -->
+    <a *ngFor="let note of notes" class="list-group-item">
+        <div class="row">
+            <div class="col-8">{{ note.description }} </div>
+            <div class="col-4 text-right">{{ note.lastModified | date:'yyyy-MM-dd' }} </div>
+        </div>
+    </a>
+</div>
