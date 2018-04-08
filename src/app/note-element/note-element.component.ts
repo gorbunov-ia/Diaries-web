@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -37,5 +37,28 @@ export class NoteElementComponent implements OnInit {
   getNote(): void {
     const noteId = +this.route.snapshot.paramMap.get('noteId');
     this.note = this.noteService.getNote(noteId);
+  }
+
+  swap(noteElementId: number, swapType: String): void {
+    console.log(this.getSortBy(noteElementId, swapType));
+  }
+
+  private getSortBy(noteElementId: number, swapType: String): number {
+    if (swapType === 'First' || this.notesElements.length === 1) {
+      return this.notesElements[0].sortBy;
+    }
+    if (swapType === 'Last') {
+      return this.notesElements[this.notesElements.length - 1].sortBy;
+    }
+    let index = 0;
+    for (index = 0; index < this.notesElements.length; index++)  {
+      if (this.notesElements[index].id === noteElementId) {
+        break;
+      }
+    }
+    if (swapType === 'Prev') {
+      return index === 0 ? this.notesElements[0].sortBy : this.notesElements[index - 1].sortBy;
+    }
+    return index === this.notesElements.length - 1 ? this.notesElements[index].sortBy : this.notesElements[index + 1].sortBy;
   }
 }

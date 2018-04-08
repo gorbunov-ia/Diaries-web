@@ -15,12 +15,12 @@ export class AuthService {
 
   login(username: string, password: string): User {
     this.user = null;
-    USERS.forEach(user => {
+    for (const user of USERS) {
       if (user.username === username) {
         this.user = user;
         return this.user;
       }
-    });
+    }
     return this.user;
   }
 

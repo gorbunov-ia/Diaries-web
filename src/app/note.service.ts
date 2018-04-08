@@ -12,11 +12,11 @@ export class NoteService {
   }
 
   getNote(id: number): Note {
-    NOTES.forEach(note => {
+    for (const note of NOTES) {
       if (note.id === id) {
         return note;
       }
-    });
+    }
     return null;
   }
 
