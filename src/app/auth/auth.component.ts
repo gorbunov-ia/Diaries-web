@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { User } from '../user';
 
@@ -8,13 +9,14 @@ import { User } from '../user';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
+  // todo: message component
   errorMsg: boolean;
   logoutMsg: boolean;
 
   username: string;
   password: string;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
@@ -27,7 +29,10 @@ export class AuthComponent implements OnInit {
     const user = this.authService.login(this.username, this.password);
     if (!user) {
       this.errorMsg = true;
+      return;
     }
+    const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+    this.router.navigate([redirect]);
   }
 
   logout(): void {

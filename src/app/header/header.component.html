@@ -4,8 +4,8 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav ml-auto">
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'home'}" routerLink="/home">Главная <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" [ngClass]="{'active':module === 'notes'}" routerLink="/notes">Заметки</a>
+      <a class="nav-item nav-link" routerLink="/home" routerLinkActive="active">Главная <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" routerLink="/notes" routerLinkActive="active">Заметки</a>
       <a *ngIf="!isAuthenticated()" class="nav-item nav-link" routerLink="">
         <span class="oi oi-account-login"></span>&nbsp;Вход
       </a>

@@ -6,6 +6,7 @@ import { USERS } from './mock-users';
 export class AuthService {
 
   private user: User;
+  redirectUrl: string;
 
   constructor() { }
 

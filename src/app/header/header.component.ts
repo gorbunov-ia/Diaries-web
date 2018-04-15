@@ -8,19 +8,16 @@ import { AuthService } from '../auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  module: String;
-
   constructor(private authService: AuthService) { }
 
-  ngOnInit() {
-    this.module = 'home';
-  }
+  ngOnInit() { }
 
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
 
   logout(): void {
+    // todo: message component
     this.authService.logout();
   }
 

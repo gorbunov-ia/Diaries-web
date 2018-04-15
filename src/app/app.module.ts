@@ -15,6 +15,8 @@ import { HomeComponent } from './home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { NoteComponent } from './note/note.component';
 import { NoteElementComponent } from './note-element/note-element.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AuthGuard } from './auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { NoteElementComponent } from './note-element/note-element.component';
     HomeComponent,
     AuthComponent,
     NoteComponent,
-    NoteElementComponent
+    NoteElementComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +36,7 @@ import { NoteElementComponent } from './note-element/note-element.component';
   ],
   providers: [
     AuthService,
+    AuthGuard,
     NoteService,
     NoteElementService
   ],
