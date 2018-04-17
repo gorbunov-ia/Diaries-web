@@ -2,7 +2,7 @@
   <div [hidden]="!errorMsg" class="alert alert-danger" role="alert">
     Неверный логин или пароль
   </div>
-  <div [hidden]="!logoutMsg" class="alert alert-info" role="alert">
+  <div [hidden]="!isLogoutMsg()" class="alert alert-info alert-dismissible fade show" role="alert">
       Вы вышли из системы
   </div>
   <form class="form-signin" (ngSubmit)="login(); userForm.reset()" #userForm="ngForm">

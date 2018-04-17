@@ -9,9 +9,8 @@ import { User } from '../user';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
-  // todo: message component
+
   errorMsg: boolean;
-  logoutMsg: boolean;
 
   username: string;
   password: string;
@@ -24,24 +23,26 @@ export class AuthComponent implements OnInit {
 
   login(): void {
     this.errorMsg = false;
-    this.logoutMsg = false;
 
     const user = this.authService.login(this.username, this.password);
     if (!user) {
       this.errorMsg = true;
       return;
     }
-    const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+    const redirect = this.authService.getRedirectUrl() ? this.authService.getRedirectUrl() : '/home';
     this.router.navigate([redirect]);
   }
 
   logout(): void {
     this.authService.logout();
-    this.logoutMsg = true;
   }
 
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
+  }
+
+  isLogoutMsg(): boolean {
+    return this.authService.isLogoutMsg();
   }
 
 }

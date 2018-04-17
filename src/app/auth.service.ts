@@ -6,7 +6,8 @@ import { USERS } from './mock-users';
 export class AuthService {
 
   private user: User;
-  redirectUrl: string;
+  private logoutMsg: boolean;
+  private redirectUrl: string;
 
   constructor() { }
 
@@ -14,8 +15,13 @@ export class AuthService {
     return this.user != null;
   }
 
+  isLogoutMsg(): boolean {
+    return this.logoutMsg;
+  }
+
   login(username: string, password: string): User {
     this.user = null;
+    this.logoutMsg = false;
     for (const user of USERS) {
       if (user.username === username) {
         this.user = user;
@@ -27,10 +33,19 @@ export class AuthService {
 
   logout(): void {
     this.user = null;
+    this.logoutMsg = true;
   }
 
   getUser(): User {
     return this.user;
+  }
+
+  getRedirectUrl(): string {
+    return this.redirectUrl;
+  }
+
+  setRedirectUrl(redirectUrl: string) {
+    this.redirectUrl = redirectUrl;
   }
 
 }
