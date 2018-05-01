@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
 import { NoteService } from './note.service';
@@ -17,6 +18,7 @@ import { NoteComponent } from './note/note.component';
 import { NoteElementComponent } from './note-element/note-element.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AuthGuard } from './auth-guard.service';
+import { MyHttpInterceptor } from './my-http-interceptor';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { AuthGuard } from './auth-guard.service';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     AppRoutingModule
   ],
@@ -38,7 +41,8 @@ import { AuthGuard } from './auth-guard.service';
     AuthService,
     AuthGuard,
     NoteService,
-    NoteElementService
+    NoteElementService,
+    { provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
