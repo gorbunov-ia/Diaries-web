@@ -1,19 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from '../app.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  templateUrl: './home.component.html'
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
-  title = 'Demo';
-  greeting: any = {id: '', content: ''};
+  greeting: any = {'id': 'XXX', 'content': 'Hello World'};
 
-  constructor(private app: AppService, private http: HttpClient) {
-    http.get('resource').subscribe(data => this.greeting = data);
+  // constructor() { }
+  constructor(private http: HttpClient) {
+    this.greeting = {'id': 'ZZZ', 'content': 'Hello World'};
+    http.get('resource').subscribe(data => {
+      console.log(data);
+      this.greeting = data;
+      });
   }
 
-  authenticated() { return this.app.authenticated; }
+  ngOnInit() {
+  }
 
 }
