@@ -6,6 +6,7 @@ import { Note } from '../note';
 import { NoteElement } from '../note-element';
 import { NoteElementService } from '../note-element.service';
 import { NoteService } from '../note.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-note-element',
@@ -31,16 +32,19 @@ export class NoteElementComponent implements OnInit {
 
   getNoteElements(): void {
     const noteId = +this.route.snapshot.paramMap.get('noteId');
-    this.notesElements = this.noteElementService.getNoteElements(noteId);
+    this.noteElementService.getNoteElements(noteId)
+      .subscribe(notesElements => this.notesElements = notesElements);
   }
 
   getNote(): void {
     const noteId = +this.route.snapshot.paramMap.get('noteId');
-    this.note = this.noteService.getNote(noteId);
+    this.noteService.getNote(noteId)
+      .subscribe(note => this.note = note);
   }
 
   swap(noteElementId: number, swapType: String): void {
-    console.log(this.getSortBy(noteElementId, swapType));
+    this.noteElementService.swap(noteElementId, this.getSortBy(noteElementId, swapType))
+      .subscribe(elements => this.getNoteElements());
   }
 
   private getSortBy(noteElementId: number, swapType: String): number {

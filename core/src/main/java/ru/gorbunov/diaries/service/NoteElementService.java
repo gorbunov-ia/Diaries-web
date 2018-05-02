@@ -28,6 +28,7 @@ public interface NoteElementService {
      *
      * @param movables list of movable elements without sortElementVm
      */
+    @Deprecated
     void fillSortElement(List<? extends Movable> movables);
 
     /**

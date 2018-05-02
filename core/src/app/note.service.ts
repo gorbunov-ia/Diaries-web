@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Note } from './note';
-import { NOTES } from './mock-notes';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class NoteService {
 
-  constructor() { }
+  private notesUrl = 'api/notes';
 
-  getNotes(): Note[] {
-    return NOTES;
+  constructor(private http: HttpClient) { }
+
+  getNotes(): Observable<Note[]> {
+    return this.http.get<Note[]>(this.notesUrl);
   }
 
-  getNote(id: number): Note {
-    for (const note of NOTES) {
-      if (note.id === id) {
-        return note;
-      }
-    }
-    return null;
+  getNote(id: number): Observable<Note> {
+    const url = `${this.notesUrl}/${id}`;
+    return this.http.get<Note>(url);
   }
 
 }

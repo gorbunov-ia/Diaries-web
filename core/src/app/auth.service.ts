@@ -9,6 +9,9 @@ import 'rxjs/add/operator/finally';
 @Injectable()
 export class AuthService {
 
+  private authUrl = 'api/user';
+  private logoutUrl = 'logout';
+
   private authenticated: boolean;
   private logoutMsg: boolean;
   private redirectUrl: string;
@@ -31,7 +34,7 @@ export class AuthService {
         authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
 
-    this.http.get<Object>('user', {headers: headers})
+    this.http.get<Object>(this.authUrl, {headers: headers})
       .pipe(catchError(_ => {
         return of(new Object());
       }))
@@ -46,7 +49,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post('logout', {}).finally(() => {
+    this.http.post(this.logoutUrl, {}).finally(() => {
         this.authenticated = false;
         this.logoutMsg = true;
     }).subscribe();

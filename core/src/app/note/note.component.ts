@@ -18,7 +18,8 @@ export class NoteComponent implements OnInit {
   }
 
   getNotes(): void {
-    this.notes = this.noteService.getNotes();
+    this.noteService.getNotes()
+      .subscribe(notes => this.notes = notes);
   }
 
 }

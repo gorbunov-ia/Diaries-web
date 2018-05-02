@@ -20,7 +20,7 @@ import java.util.Optional;
  * @author Gorbunov.ia
  */
 @RestController
-@RequestMapping(path = "/user")
+@RequestMapping(path = "api/user")
 public class UserController {
 
     /**
