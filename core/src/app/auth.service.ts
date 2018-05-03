@@ -27,25 +27,24 @@ export class AuthService {
     return this.logoutMsg;
   }
 
-  authenticate(credentials: Credentials, callback: any): void {
+  authenticate(credentials: Credentials): Observable<boolean> {
     this.logoutMsg = false;
 
     const headers = new HttpHeaders(credentials ? {
         authorization : 'Basic ' + btoa(credentials.username + ':' + credentials.password)
     } : {});
 
-    this.http.get<Object>(this.authUrl, {headers: headers})
-      .pipe(catchError(_ => {
-        return of(new Object());
-      }))
-      .subscribe(response => {
-        if (response['id']) {
-          this.authenticated = true;
-        } else {
-          this.authenticated = false;
-        }
-        return callback && callback();
-      });
+    return this.http.get<Object>(this.authUrl, {headers: headers})
+      .pipe(
+        map(response => {
+          if (response['id']) {
+            this.authenticated = true;
+          } else {
+            this.authenticated = false;
+          }
+          return this.authenticated;
+        }),
+        catchError(_ => of(false)));
   }
 
   logout(): void {

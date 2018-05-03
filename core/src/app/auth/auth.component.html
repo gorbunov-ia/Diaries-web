@@ -5,12 +5,12 @@
   <div [hidden]="!isLogoutMsg()" class="alert alert-info alert-dismissible fade show" role="alert">
       Вы вышли из системы
   </div>
-  <form class="form-signin" (ngSubmit)="login(); userForm.reset()" #userForm="ngForm">
+  <form class="form-signin" (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">
     <div class="form-group">
       <label for="username" class="sr-only">Логин</label>
       <input type="text" name="username" id="username" class="form-control" placeholder="Логин"
              required autofocus
-             [(ngModel)]="credentials.username" name="username"
+             [(ngModel)]="credentials.username"
              #inputUsername="ngModel"/>
       <div *ngIf="inputUsername.invalid && (inputUsername.dirty || inputUsername.touched)"
              class="alert alert-danger">
@@ -23,7 +23,7 @@
       <label for="password" class="sr-only">Пароль</label>
       <input type="password" name="password" id="password" class="form-control" placeholder="Пароль"
               required
-              [(ngModel)]="credentials.password" name="password"
+              [(ngModel)]="credentials.password"
               #inputPassword="ngModel"/>
       <div *ngIf="inputPassword.invalid && (inputPassword.dirty || inputPassword.touched)"
             class="alert alert-danger">
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!userForm.form.valid">Войти</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="onProgress">Войти</button>
   </form>
 
 </div>

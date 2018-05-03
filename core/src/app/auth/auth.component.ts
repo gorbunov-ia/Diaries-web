@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Credentials } from '../credentials';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-auth',
@@ -11,6 +12,7 @@ import { Credentials } from '../credentials';
 export class AuthComponent implements OnInit {
 
   errorMsg: boolean;
+  onProgress: boolean;
 
   credentials: Credentials = {username: '', password: ''};
 
@@ -20,19 +22,31 @@ export class AuthComponent implements OnInit {
   ngOnInit() {
   }
 
-  // todo: wait logo
-  login(): void {
+  onSubmit(form: NgForm): void {
+    if (!form.valid) {
+      return;
+    }
+    this.onProgress = true;
+    this.login(_ => {
+      form.reset();
+      this.onProgress = false;
+    });
+  }
+
+  private login(callback?: any): void {
     this.errorMsg = false;
 
-    this.authService.authenticate(this.credentials, () => {
-      if (!this.authService.isAuthenticated()) {
-        this.errorMsg = true;
-        return;
-      }
-      const redirect = this.authService.getRedirectUrl() ? this.authService.getRedirectUrl() : '/home';
-      this.authService.setRedirectUrl(null);
-      this.router.navigate([redirect]);
-    });
+    this.authService.authenticate(this.credentials)
+      .subscribe(result => {
+        if (!result) {
+          this.errorMsg = true;
+          return callback && callback();
+        }
+        const redirect = this.authService.getRedirectUrl() ? this.authService.getRedirectUrl() : '/home';
+        this.authService.setRedirectUrl(null);
+        this.router.navigate([redirect]);
+        return callback && callback();
+      });
   }
 
   logout(): void {
