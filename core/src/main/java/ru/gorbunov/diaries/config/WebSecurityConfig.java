@@ -3,6 +3,7 @@ package ru.gorbunov.diaries.config;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +22,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     /**
      * {@link org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder}.
@@ -46,6 +47,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
+     * Config API end-points.
+     */
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // todo: remember me
+            http
+                .httpBasic()
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/api/**", "/logout").authenticated()
+                .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        }
+    }
+
+    /**
+     * Config another end-points.
+     */
+    @Configuration
+    public static class WebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .authorizeRequests()
+                .anyRequest().permitAll();
+        }
+    }
+
+    /**
      * Initialization.
      */
     @PostConstruct
@@ -57,23 +91,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         } catch (Exception e) {
             throw new BeanInitializationException("Security configuration failed", e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        // todo: remember me
-        http
-            .httpBasic()
-            .and()
-                .authorizeRequests()
-                .antMatchers("/index.html", "/", "/home", "/login", "/*.bundle.*").permitAll()
-                .anyRequest().authenticated()
-            .and()
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     /**
