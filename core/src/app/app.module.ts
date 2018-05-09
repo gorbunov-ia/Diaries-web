@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -39,6 +39,14 @@ import { XhrInterceptor } from './xhr-interceptor';
   ],
   providers: [
     AuthService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (as: AuthService) => function() {
+        return as.authenticate(null).toPromise();
+      },
+      deps: [AuthService],
+      multi: true
+    },
     AuthGuard,
     NoteService,
     NoteElementService,
