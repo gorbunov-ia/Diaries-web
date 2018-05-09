@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import javax.annotation.PostConstruct;
 
@@ -47,15 +49,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // todo: remember me
         http
             .httpBasic()
+            .and()
+                .rememberMe()
+                .rememberMeServices(rememberMeServices())
             .and()
                 .authorizeRequests()
                 .antMatchers("/api/**", "/logout").authenticated()
             .and()
                 .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            //h2-console settings
+//                .disable()
+//            .headers()
+//                .frameOptions()
+//                .disable();
+
     }
 
     /**
@@ -80,6 +90,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * Configure remember me service.
+     *
+     * @return instance
+     */
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        SpringSessionRememberMeServices meServices = new SpringSessionRememberMeServices();
+        meServices.setAlwaysRemember(true);
+        return meServices;
     }
 
 }
