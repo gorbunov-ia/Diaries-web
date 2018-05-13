@@ -69,33 +69,28 @@ public class NoteElementServiceImpl implements NoteElementService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Collection<NoteElement> changeSortBy(final Integer noteElementId, final Integer sortBy) {
         if (noteElementId == null || sortBy == null) {
-            throw new IllegalArgumentException("Arguments must be not null.");
+            throw new NullPointerException("Arguments must be not null.");
         }
         final Optional<User> user = userService.getUser();
         if (!user.isPresent()) {
-            return Collections.emptyList();
+            throw new SwapElementException();
         }
-        try {
-            final Optional<NoteElement> noteElement = getNoteElementByIdAndUser(noteElementId, user.get());
-            if (!noteElement.isPresent()) {
-                throw new SwapElementException();
-            }
-            if (noteElement.get().getSortBy().equals(sortBy)) {
-                return Collections.singletonList(noteElement.get());
-            }
-            final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement.get(), sortBy);
-            if (noteElementsForShift.isEmpty()) {
-                throw new SwapElementException();
-            }
-            SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement.get(), sortBy);
-            return swapHelper.swap(noteElementRepository);
-        } catch (Exception e) {
-            log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
-            return Collections.emptyList();
+        final Optional<NoteElement> noteElement = getNoteElementByIdAndUser(noteElementId, user.get());
+        if (!noteElement.isPresent()) {
+            throw new SwapElementException();
         }
+        if (noteElement.get().getSortBy().equals(sortBy)) {
+            return Collections.singletonList(noteElement.get());
+        }
+        final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement.get(), sortBy);
+        if (noteElementsForShift.isEmpty()) {
+            throw new SwapElementException();
+        }
+        SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement.get(), sortBy);
+        return swapHelper.swap(noteElementRepository);
     }
 
     /**

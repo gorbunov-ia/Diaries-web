@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Helper for swap elements.
@@ -56,11 +57,8 @@ public class SwapHelper<T extends Swappable> {
      * @return                      swap elements with new sort by
      * @throws SwapElementException if swap helper construct with null parameters
      */
-    public List<T> swap(final JpaRepository<T, ? extends Serializable> swapElementRepository)
-            throws SwapElementException {
-        if (swapElementRepository == null) {
-            throw new IllegalArgumentException();
-        }
+    public List<T> swap(final JpaRepository<T, ? extends Serializable> swapElementRepository) {
+        Objects.requireNonNull(swapElementRepository);
         if (!isValid()) {
             throw new SwapElementException();
         }

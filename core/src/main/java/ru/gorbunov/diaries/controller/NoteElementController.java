@@ -16,7 +16,6 @@ import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.controller.vm.SwapElementVm;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
-import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.service.NoteElementService;
 import ru.gorbunov.diaries.service.NoteService;
@@ -104,16 +103,12 @@ public class NoteElementController {
      *
      * @param swapElementVm data required for swap
      * @return list of note element dto
-     * @throws BadRequestException if note element id or sort by is wrong
      */
     @PostMapping(value = "/swap")
     public ResponseEntity<Collection<NoteElementDto>> swap(@Valid @RequestBody SwapElementVm swapElementVm) {
         log.debug("REST request to swap Note Element.");
         Collection<NoteElement> elements = noteElementService.changeSortBy(swapElementVm.getNoteElementId(),
                                                                            swapElementVm.getSortBy());
-        if (elements.isEmpty()) {
-            throw new BadRequestException();
-        }
         return ResponseEntity.ok(elements.stream()
                     .map(element -> conversionService.convert(element, NoteElementDto.class))
                     .collect(Collectors.toList()));

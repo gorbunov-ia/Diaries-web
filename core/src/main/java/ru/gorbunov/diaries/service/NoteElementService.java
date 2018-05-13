@@ -18,8 +18,9 @@ public interface NoteElementService {
      *
      * @param noteElementId editing note element
      * @param sortBy        new sort by
-     * @return              note elements with new sort by
-     * @throws              IllegalArgumentException if arguments contains null
+     * @return note elements with new sort by
+     * @throws NullPointerException if arguments contains null
+     * @throws ru.gorbunov.diaries.exception.SwapElementException if swap failure
      */
     Collection<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
 
@@ -34,10 +35,10 @@ public interface NoteElementService {
     /**
      * Method to get note elements for current user and note id with sorting.
      *
-     * @param noteId    note id in db
-     * @param field     sorting field
-     * @param isDesc    ascending or descending sort
-     * @return          collection note elements
+     * @param noteId note id in db
+     * @param field  sorting field
+     * @param isDesc ascending or descending sort
+     * @return collection note elements
      */
     List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc);
 }

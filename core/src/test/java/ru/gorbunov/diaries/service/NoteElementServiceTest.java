@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import ru.gorbunov.diaries.domain.Movable;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.User;
+import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
 
@@ -92,7 +94,8 @@ public class NoteElementServiceTest {
     public void testWithoutUserChangeSortBy() {
         //mockUser();
         mockNoteElementFindOne(getNoteElementForTest());
-        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
+        Assertions.assertThatThrownBy(() -> service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY))
+                .isInstanceOf(SwapElementException.class);
     }
 
     /**
@@ -101,13 +104,14 @@ public class NoteElementServiceTest {
     @Test
     public void testNotFoundNoteElementChangeSortBy() {
         mockUser();
-        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
+        Assertions.assertThatThrownBy(() -> service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY))
+                .isInstanceOf(SwapElementException.class);
     }
 
     /**
      * Test when note element is null.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testEmptyNoteElementChangeSortBy() {
         service.changeSortBy(null, NEW_SORT_BY);
     }
@@ -115,7 +119,7 @@ public class NoteElementServiceTest {
     /**
      * Test when new sort by is null.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testEmptySortByChangeSortBy() {
         service.changeSortBy(NOTE_ELEMENT_ID, null);
     }
@@ -130,7 +134,8 @@ public class NoteElementServiceTest {
         NoteElement noteElement = getNoteElementForTest();
         mockNoteElementFindOne(noteElement);
 
-        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
+        Assertions.assertThatThrownBy(() -> service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY))
+                .isInstanceOf(SwapElementException.class);
         Assert.assertEquals(noteElement.getSortBy(), OLD_SORT_BY);
     }
 
