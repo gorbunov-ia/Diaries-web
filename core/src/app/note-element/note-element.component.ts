@@ -6,7 +6,6 @@ import { Note } from '../note';
 import { NoteElement } from '../note-element';
 import { NoteElementService } from '../note-element.service';
 import { NoteService } from '../note.service';
-import { element } from 'protractor';
 
 @Component({
   selector: 'app-note-element',
@@ -44,7 +43,9 @@ export class NoteElementComponent implements OnInit {
 
   swap(noteElementId: number, swapType: String): void {
     this.noteElementService.swap(noteElementId, this.getSortBy(noteElementId, swapType))
-      .subscribe(elements => this.getNoteElements());
+      .subscribe(elements => {
+        elements.forEach(element => this.updateNoteElement(element));
+      });
   }
 
   private getSortBy(noteElementId: number, swapType: String): number {
@@ -64,5 +65,16 @@ export class NoteElementComponent implements OnInit {
       return index === 0 ? this.notesElements[0].sortBy : this.notesElements[index - 1].sortBy;
     }
     return index === this.notesElements.length - 1 ? this.notesElements[index].sortBy : this.notesElements[index + 1].sortBy;
+  }
+
+  private updateNoteElement(element: NoteElement): void {
+    for (let i = 0; i < this.notesElements.length; i++) {
+      if (element.sortBy === this.notesElements[i].sortBy) {
+        this.notesElements[i].id = element.id;
+        this.notesElements[i].description = element.description;
+        this.notesElements[i].lastModified = element.lastModified;
+        return;
+      }
+    }
   }
 }

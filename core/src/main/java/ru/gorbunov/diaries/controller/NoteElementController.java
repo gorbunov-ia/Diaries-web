@@ -20,6 +20,7 @@ import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.service.NoteElementService;
 import ru.gorbunov.diaries.service.NoteService;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -120,21 +121,20 @@ public class NoteElementController {
      * @throws BadRequestException if note element id or sort by is wrong
      */
     @PostMapping(value = "/swap")
-    public ResponseEntity<List<NoteElementDto>> swap(@RequestParam("note-element-id") final Integer noteElementId,
-                       @RequestParam("sort-by") final Integer sortBy) {
+    public ResponseEntity<Collection<NoteElementDto>> swap(@RequestParam("note-element-id") final Integer noteElementId,
+                                                           @RequestParam("sort-by") final Integer sortBy) {
         log.debug("REST request to swap Note Element.");
         if (noteElementId == null || sortBy == null) {
             throw new BadRequestException();
         }
-        Optional<NoteElement> element = noteElementService.changeSortBy(noteElementId, sortBy);
+        Collection<NoteElement> elements = noteElementService.changeSortBy(noteElementId, sortBy);
 
-        if (element.isPresent()) {
-            // todo: return list of edited entities
-            return ResponseEntity.ok(Collections.singletonList(
-                    conversionService.convert(element.get(), NoteElementDto.class)));
-        } else {
+        if (elements.isEmpty()) {
             throw new BadRequestException();
         }
+        return ResponseEntity.ok(elements.stream()
+                    .map(element -> conversionService.convert(element, NoteElementDto.class))
+                    .collect(Collectors.toList()));
     }
 
 }

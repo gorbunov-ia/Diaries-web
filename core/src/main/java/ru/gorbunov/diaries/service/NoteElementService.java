@@ -3,8 +3,8 @@ package ru.gorbunov.diaries.service;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service for interaction with note elements.
@@ -18,10 +18,10 @@ public interface NoteElementService {
      *
      * @param noteElementId editing note element
      * @param sortBy        new sort by
-     * @return              note element with new sort by
+     * @return              note elements with new sort by
      * @throws              IllegalArgumentException if arguments contains null
      */
-    Optional<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
+    Collection<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
 
     /**
      * Add sortElementVm (helper on UI) to each note element.

@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -69,13 +70,13 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
-    public Optional<NoteElement> changeSortBy(final Integer noteElementId, final Integer sortBy) {
+    public Collection<NoteElement> changeSortBy(final Integer noteElementId, final Integer sortBy) {
         if (noteElementId == null || sortBy == null) {
             throw new IllegalArgumentException("Arguments must be not null.");
         }
         final Optional<User> user = userService.getUser();
         if (!user.isPresent()) {
-            return Optional.empty();
+            return Collections.emptyList();
         }
         try {
             final Optional<NoteElement> noteElement = getNoteElementByIdAndUser(noteElementId, user.get());
@@ -83,17 +84,17 @@ public class NoteElementServiceImpl implements NoteElementService {
                 throw new SwapElementException();
             }
             if (noteElement.get().getSortBy().equals(sortBy)) {
-                return noteElement;
+                return Collections.singletonList(noteElement.get());
             }
             final List<NoteElement> noteElementsForShift = getNoteElementsForShift(noteElement.get(), sortBy);
             if (noteElementsForShift.isEmpty()) {
                 throw new SwapElementException();
             }
             SwapHelper<NoteElement> swapHelper = new SwapHelper<>(noteElementsForShift, noteElement.get(), sortBy);
-            return Optional.of(swapHelper.swap(noteElementRepository));
+            return swapHelper.swap(noteElementRepository);
         } catch (Exception e) {
             log.warn("Swap error ID: {}, sortBy: {}", noteElementId, sortBy);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 

@@ -5,6 +5,7 @@ import ru.gorbunov.diaries.domain.Swappable;
 import ru.gorbunov.diaries.exception.SwapElementException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,10 +53,11 @@ public class SwapHelper<T extends Swappable> {
      * Do swap elements and change sort by.
      *
      * @param swapElementRepository repository for save swap elements
-     * @return                      swap element with new sort by
+     * @return                      swap elements with new sort by
      * @throws SwapElementException if swap helper construct with null parameters
      */
-    public T swap(final JpaRepository<T, ? extends Serializable> swapElementRepository) throws SwapElementException {
+    public List<T> swap(final JpaRepository<T, ? extends Serializable> swapElementRepository)
+            throws SwapElementException {
         if (swapElementRepository == null) {
             throw new IllegalArgumentException();
         }
@@ -66,7 +68,7 @@ public class SwapHelper<T extends Swappable> {
         saveSwapElementsForShift(swapElementRepository);
         swapElements();
         saveSwapElementsForShift(swapElementRepository);
-        return swapElement;
+        return getChangedElements();
     }
 
     /**
@@ -132,6 +134,18 @@ public class SwapHelper<T extends Swappable> {
         swapElementRepository.save(swapElement);
         swapElementRepository.saveAll(swapElementsForShift);
         swapElementRepository.flush();
+    }
+
+    /**
+     * Combine swap and shifted elements.
+     *
+     * @return elements with new sort by
+     */
+    private List<T> getChangedElements() {
+        List<T> result = new ArrayList<>(swapElementsForShift.size() + 1);
+        result.add(swapElement);
+        result.addAll(swapElementsForShift);
+        return result;
     }
 
 }

@@ -20,6 +20,7 @@ import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +92,7 @@ public class NoteElementServiceTest {
     public void testWithoutUserChangeSortBy() {
         //mockUser();
         mockNoteElementFindOne(getNoteElementForTest());
-        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
+        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
     }
 
     /**
@@ -100,7 +101,7 @@ public class NoteElementServiceTest {
     @Test
     public void testNotFoundNoteElementChangeSortBy() {
         mockUser();
-        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
+        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
     }
 
     /**
@@ -129,7 +130,7 @@ public class NoteElementServiceTest {
         NoteElement noteElement = getNoteElementForTest();
         mockNoteElementFindOne(noteElement);
 
-        Assert.assertFalse(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isPresent());
+        Assert.assertTrue(service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY).isEmpty());
         Assert.assertEquals(noteElement.getSortBy(), OLD_SORT_BY);
     }
 
@@ -147,12 +148,14 @@ public class NoteElementServiceTest {
         previous.setSortBy(NEW_SORT_BY);
         mockNoteElementFindAll(Collections.singletonList(previous));
 
-        Optional<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY);
+        Collection<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_SORT_BY);
 
-        Assert.assertTrue(result.isPresent());
+        Assert.assertFalse(result.isEmpty());
         Assert.assertEquals(noteElement.getSortBy(), NEW_SORT_BY);
-        Assert.assertEquals(result.get().getSortBy(), NEW_SORT_BY);
-        Assert.assertEquals(noteElement, result.get());
+
+        final NoteElement noteElementAfterSwap = findNoteElementByIdFromCollection(result, noteElement.getId());
+        Assert.assertEquals(noteElementAfterSwap.getSortBy(), NEW_SORT_BY);
+        Assert.assertEquals(noteElement, noteElementAfterSwap);
         Assert.assertEquals(previous.getSortBy(), OLD_SORT_BY);
     }
 
@@ -168,20 +171,42 @@ public class NoteElementServiceTest {
         mockNoteElementFindOne(noteElement);
 
         NoteElement middle = new NoteElement();
+        middle.setId(NOTE_ELEMENT_ID + MIDDLE_NEXT_SORT_BY);
         middle.setSortBy(MIDDLE_NEXT_SORT_BY);
         NoteElement next = new NoteElement();
+        next.setId(NOTE_ELEMENT_ID + NEW_NEXT_SORT_BY);
         next.setSortBy(NEW_NEXT_SORT_BY);
         mockNoteElementFindAll(Arrays.asList(next, middle));
 
-        Optional<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_NEXT_SORT_BY);
+        Collection<NoteElement> result = service.changeSortBy(NOTE_ELEMENT_ID, NEW_NEXT_SORT_BY);
 
-        Assert.assertTrue(result.isPresent());
+        Assert.assertFalse(result.isEmpty());
         Assert.assertEquals(noteElement.getSortBy(), NEW_NEXT_SORT_BY);
-        Assert.assertEquals(result.get().getSortBy(), NEW_NEXT_SORT_BY);
-        Assert.assertEquals(noteElement, result.get());
+
+        final NoteElement noteElementAfterSwap = findNoteElementByIdFromCollection(result, noteElement.getId());
+        Assert.assertEquals(noteElementAfterSwap.getSortBy(), NEW_NEXT_SORT_BY);
+        Assert.assertEquals(noteElement, noteElementAfterSwap);
 
         Assert.assertEquals(middle.getSortBy(), OLD_NEXT_SORT_BY);
+        Assert.assertEquals(middle, findNoteElementByIdFromCollection(result, middle.getId()));
+
         Assert.assertEquals(next.getSortBy(), MIDDLE_NEXT_SORT_BY);
+        Assert.assertEquals(next, findNoteElementByIdFromCollection(result, next.getId()));
+    }
+
+    /**
+     * Method help to find element by id from collection.
+     *
+     * @param noteElements collections for search
+     * @param id note element id for search
+     * @return NoteElement not null
+     */
+    private NoteElement findNoteElementByIdFromCollection(Collection<NoteElement> noteElements, Integer id) {
+        Optional<NoteElement> result = noteElements.stream()
+                .filter(element -> element.getId().equals(id))
+                .findFirst();
+        Assert.assertTrue(result.isPresent());
+        return result.get();
     }
 
     /**
