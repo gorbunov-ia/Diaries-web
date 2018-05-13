@@ -16,7 +16,7 @@ export class NoteElementService {
   }
 
   swap(noteElementId: number, sortBy: number): Observable<NoteElement[]> {
-    const url = `${this.notesElementsUrl}/swap?note-element-id=${noteElementId}&sort-by=${sortBy}`;
-    return this.http.post<NoteElement[]>(url, null);
+    const url = `${this.notesElementsUrl}/swap`;
+    return this.http.post<NoteElement[]>(url, {noteElementId: noteElementId, sortBy: sortBy});
   }
 }

@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.controller.dto.NoteElementDto;
+import ru.gorbunov.diaries.controller.vm.SwapElementVm;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
@@ -20,6 +21,7 @@ import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.service.NoteElementService;
 import ru.gorbunov.diaries.service.NoteService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -97,38 +99,18 @@ public class NoteElementController {
         return ResponseEntity.ok(notesElementsDto);
     }
 
-/*
-    @PostMapping(value="/swapJson", headers="Content type")
-    public String swap(@Valid @RequestBody SwapElementVm swapVM) {
-
-        NoteElement element = noteElementService.changeSortBy(swapVM
-                .getNoteElementId(),swapVM.getSortBy());
-
-        if (element != null) {
-            return "redirect:/notes-elements/" + element.getNote().getId();
-        } else {
-            throw new BadRequestException();
-        }
-    }
-*/
-
     /**
      * Method set new sort by value to note element.
      *
-     * @param noteElementId modifiable note element id
-     * @param sortBy        new sort by value
+     * @param swapElementVm data required for swap
      * @return list of note element dto
      * @throws BadRequestException if note element id or sort by is wrong
      */
     @PostMapping(value = "/swap")
-    public ResponseEntity<Collection<NoteElementDto>> swap(@RequestParam("note-element-id") final Integer noteElementId,
-                                                           @RequestParam("sort-by") final Integer sortBy) {
+    public ResponseEntity<Collection<NoteElementDto>> swap(@Valid @RequestBody SwapElementVm swapElementVm) {
         log.debug("REST request to swap Note Element.");
-        if (noteElementId == null || sortBy == null) {
-            throw new BadRequestException();
-        }
-        Collection<NoteElement> elements = noteElementService.changeSortBy(noteElementId, sortBy);
-
+        Collection<NoteElement> elements = noteElementService.changeSortBy(swapElementVm.getNoteElementId(),
+                                                                           swapElementVm.getSortBy());
         if (elements.isEmpty()) {
             throw new BadRequestException();
         }
