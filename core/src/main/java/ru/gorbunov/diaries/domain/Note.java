@@ -12,9 +12,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 /**
  * Note entity.
  *
@@ -34,8 +31,6 @@ public class Note extends GeneralEntity {
     /**
      * Note description.
      */
-    @NotNull
-    @Size(min = 1, max = 64)
     @Column(nullable = false, length = 64)
     private String description;
 

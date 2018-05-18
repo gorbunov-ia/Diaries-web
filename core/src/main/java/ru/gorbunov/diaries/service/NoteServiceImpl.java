@@ -3,12 +3,18 @@ package ru.gorbunov.diaries.service;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
+import ru.gorbunov.diaries.domain.User;
+import ru.gorbunov.diaries.exception.BadRequestException;
+import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.repository.NoteRepository;
 import ru.gorbunov.diaries.repository.specification.NoteSpecification;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,5 +70,63 @@ public class NoteServiceImpl implements NoteService {
                 .flatMap(user -> noteRepository.findOne(Specification
                         .where(noteSpecification.byUser(user))
                         .and(noteSpecification.byId(noteId))));
+    }
+
+    @Override
+    @Transactional
+    public Note createNote(NoteDto noteDto) {
+        final Optional<User> user = userService.getUser();
+        // todo: validate value
+        return noteRepository.save(getNoteFromDto(noteDto,
+                user.orElseThrow(() -> new BadRequestException("User not found."))));
+    }
+
+    @Override
+    @Transactional
+    public void deleteNote(Integer noteId) {
+        final Optional<Note> note = noteRepository.findOne(noteSpecification
+                .byUser(userService.getUser().orElseThrow(() -> new BadRequestException("User not found.")))
+                .and(noteSpecification.byId(noteId)));
+        noteRepository.delete(note.orElseThrow(ResourceNotFoundException::new));
+    }
+
+    @Override
+    @Transactional
+    public Note updateNote(NoteDto noteDto) {
+        final Optional<Note> note = noteRepository.findOne(noteSpecification
+                .byUser(userService.getUser().orElseThrow(() -> new BadRequestException("User not found.")))
+                .and(noteSpecification.byId(noteDto.getId())));
+        // todo: validate value
+        return noteRepository.save(updateNoteFromDto(note.orElseThrow(ResourceNotFoundException::new), noteDto));
+    }
+
+    /**
+     * Create note entity and fill field from dto.
+     *
+     * @param noteDto dto
+     * @param user user for set into entity
+     * @return not saved entity
+     */
+    private Note getNoteFromDto(NoteDto noteDto, User user) {
+        final Note note = new Note();
+        note.setUser(user);
+        note.setDescription(noteDto.getDescription());
+        note.setSortBy(noteDto.getSortBy());
+        note.setLastModified(new Date());
+        return note;
+    }
+
+    /**
+     * Update note field from dto.
+     *
+     * @param note note for update
+     * @param dto note dto with new data
+     * @return note with new field values
+     */
+    private Note updateNoteFromDto(Note note, NoteDto dto) {
+        note.setDescription(dto.getDescription());
+        note.setSortBy(dto.getSortBy());
+        note.setLastModified(new Date());
+        return note;
     }
 }

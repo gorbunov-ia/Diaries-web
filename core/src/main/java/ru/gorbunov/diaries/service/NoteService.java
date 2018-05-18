@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
 
 import java.util.List;
@@ -28,4 +29,28 @@ public interface NoteService {
      * @return note entity or null if note id does not exist for current user
      */
     Optional<Note> getUserNoteById(Integer noteId);
+
+    /**
+     * Method to create note for current user.
+     *
+     * @param noteDto dto
+     * @return created entity
+     */
+    Note createNote(NoteDto noteDto);
+
+    /**
+     * Method to delete note by id.
+     *
+     * @param noteId identifier of entity
+     */
+    void deleteNote(Integer noteId);
+
+    /**
+     * Method to update note.
+     *
+     * @param noteDto dto
+     * @return updated entity
+     */
+    Note updateNote(NoteDto noteDto);
+
 }

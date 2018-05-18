@@ -1,6 +1,7 @@
 package ru.gorbunov.diaries.controller;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,14 +10,21 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
+import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.service.NoteService;
+
+import javax.validation.Valid;
 
 /**
  * Controller for notes page.
@@ -79,6 +87,51 @@ public class NoteController {
         final Optional<Note> note = noteService.getUserNoteById(noteId);
         return note.map((element) -> ResponseEntity.ok(conversionService.convert(element, NoteDto.class)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Method to create new note.
+     *
+     * @param noteDto data for create note
+     * @return dto with created note
+     */
+    @PostMapping
+    public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
+        log.debug("REST request to create note: {}", noteDto);
+        if (Objects.nonNull(noteDto.getId())) {
+            throw new BadRequestException("Request should not include id field.");
+        }
+        final Note note = noteService.createNote(noteDto);
+        return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));
+    }
+
+    /**
+     * Method to delete note from db.
+     *
+     * @param noteId note identification
+     * @return http status
+     */
+    @DeleteMapping("/{noteId}")
+    public ResponseEntity<NoteDto> deleteNote(@PathVariable final Integer noteId) {
+        log.debug("REST request to delete note: {}", noteId);
+        noteService.deleteNote(noteId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method to update note.
+     *
+     * @param noteDto dto
+     * @return dto with new field values
+     */
+    @PutMapping
+    public ResponseEntity<NoteDto> updateNote(@Valid @RequestBody NoteDto noteDto) {
+        log.debug("REST request to update note: {}", noteDto);
+        if (Objects.isNull(noteDto.getId())) {
+            throw new BadRequestException("Request should include id field.");
+        }
+        final Note note = noteService.updateNote(noteDto);
+        return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));
     }
 
 }
