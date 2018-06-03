@@ -70,7 +70,7 @@ public class NoteController {
     @GetMapping
     public ResponseEntity<List<NoteDto>> getAllNotes() {
         log.debug("REST request to get Notes.");
-        final List<Note> notes = noteService.getUserNotesWithSort("lastModified", true);
+        final List<Note> notes = noteService.getUserNotesWithSort("sortBy", true);
         List<NoteDto> notesDto = notes.stream().map(note -> conversionService.convert(note, NoteDto.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(notesDto);

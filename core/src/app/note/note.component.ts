@@ -48,6 +48,7 @@ export class NoteComponent implements OnInit {
       .subscribe(result => {
         if (result) {
           this.notes.push(result);
+          this.sortNotes();
           this.closeForm();
         }
         return callback && callback();
@@ -73,6 +74,7 @@ export class NoteComponent implements OnInit {
               break;
             }
           }
+          this.sortNotes();
           this.closeForm();
         }
         return callback && callback();
@@ -92,6 +94,10 @@ export class NoteComponent implements OnInit {
     this.newNote = new Note();
     this.isNewNoteFormOpened = false;
     this.errorMsg = false;
+  }
+
+  private sortNotes(): void {
+    this.notes.sort((a, b) => b.sortBy - a.sortBy);
   }
 
   private afterResponse = (form: NgForm): void => {
