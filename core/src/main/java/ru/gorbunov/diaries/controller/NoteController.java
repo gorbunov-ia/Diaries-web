@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -112,10 +113,10 @@ public class NoteController {
      * @return http status
      */
     @DeleteMapping("/{noteId}")
-    public ResponseEntity<NoteDto> deleteNote(@PathVariable final Integer noteId) {
+    public ResponseEntity<Void> deleteNote(@PathVariable final Integer noteId) {
         log.debug("REST request to delete note: {}", noteId);
         noteService.deleteNote(noteId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     /**

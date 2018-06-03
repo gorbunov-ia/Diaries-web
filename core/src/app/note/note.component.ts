@@ -53,6 +53,14 @@ export class NoteComponent implements OnInit {
       }, _ => this.errorMsg = true);
   }
 
+  deleteNote(note: Note): void {
+    this.noteService.deleteNote(note.id)
+      .subscribe(_ => {
+          const index = this.notes.indexOf(note);
+          this.notes.splice(index, 1);
+      });
+  }
+
   initForm(): void {
     this.isNewNoteFormOpened = true;
   }

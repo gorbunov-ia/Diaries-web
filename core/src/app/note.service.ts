@@ -20,8 +20,12 @@ export class NoteService {
   }
 
   createNote(note: Note): Observable<Note> {
-    const url = this.notesUrl;
-    return this.http.post<Note>(url, note);
+    return this.http.post<Note>(this.notesUrl, note);
+  }
+
+  deleteNote(id: number): Observable<Note> {
+    const url = `${this.notesUrl}/${id}`;
+    return this.http.delete<Note>(url);
   }
 
 }
