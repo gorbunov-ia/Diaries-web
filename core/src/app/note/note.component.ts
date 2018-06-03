@@ -35,10 +35,11 @@ export class NoteComponent implements OnInit {
       return;
     }
     this.onProgress = true;
-    this.createNote(_ => {
-      form.reset();
-      this.onProgress = false;
-    });
+    if (this.newNote.id) {
+      this.editNote(_ => this.afterResponse(form));
+    } else {
+      this.createNote(_ => this.afterResponse(form));
+    }
   }
 
   createNote(callback?: any): void {
@@ -61,14 +62,41 @@ export class NoteComponent implements OnInit {
       });
   }
 
+  editNote(callback?: any): void {
+    this.errorMsg = false;
+    this.noteService.editNote(this.newNote)
+      .subscribe(result => {
+        if (result) {
+          for (let i = 0; i < this.notes.length; i++) {
+            if (this.notes[i].id === result.id) {
+              this.notes[i] = result;
+              break;
+            }
+          }
+          this.closeForm();
+        }
+        return callback && callback();
+      }, _ => this.errorMsg = true);
+  }
+
   initForm(): void {
     this.isNewNoteFormOpened = true;
+  }
+
+  initEditForm(note: Note): void {
+    this.newNote = note;
+    this.initForm();
   }
 
   closeForm(): void {
     this.newNote = new Note();
     this.isNewNoteFormOpened = false;
     this.errorMsg = false;
+  }
+
+  private afterResponse = (form: NgForm): void => {
+    form.reset();
+    this.onProgress = false;
   }
 
 }
