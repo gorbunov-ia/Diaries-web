@@ -19,4 +19,9 @@ export class NoteService {
     return this.http.get<Note>(url);
   }
 
+  createNote(note: Note): Observable<Note> {
+    const url = this.notesUrl;
+    return this.http.post<Note>(url, note);
+  }
+
 }
