@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Note } from '../note';
 import { NoteService } from '../note.service';
-import { map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+
 
 @Component({
   selector: 'app-note-editor',
@@ -12,23 +11,78 @@ import { of } from 'rxjs/observable/of';
 })
 export class NoteEditorComponent implements OnInit {
 
-  private errorMsg;
-  private onProgress;
-  @Input() note: Note;
+  @Input() newNote: Note;
+  @Input() isNewNoteFormOpened: boolean;
+  errorMsg: boolean;
+  onProgress: boolean;
+  @Output() result = new EventEmitter<Note>();
 
   constructor(private noteService: NoteService) { }
 
   ngOnInit() {
-
+    this.closeForm();
   }
 
-  initHero(): void {
-    this.note = new Note();
+  onSubmit(form: NgForm): void {
+    if (!form.valid) {
+      return;
+    }
+    this.onProgress = true;
+    if (this.newNote.id) {
+      this.editNote(_ => this.afterResponse(form));
+    } else {
+      this.createNote(_ => this.afterResponse(form));
+    }
   }
 
-  clearHero(): void {
-    this.note = null;
+  createNote(callback?: any): void {
     this.errorMsg = false;
+    this.noteService.createNote(this.newNote)
+      .subscribe(result => {
+        if (result) {
+          this.result.emit(result);
+          // this.notes.push(result);
+          // this.sortNotes();
+          this.closeForm();
+        }
+        return callback && callback();
+      }, _ => this.errorMsg = true);
+  }
+
+  editNote(callback?: any): void {
+    this.errorMsg = false;
+    this.noteService.editNote(this.newNote)
+      .subscribe(result => {
+        if (result) {
+          this.result.emit(result);
+          /*
+          for (let i = 0; i < this.notes.length; i++) {
+            if (this.notes[i].id === result.id) {
+              this.notes[i] = result;
+              break;
+            }
+          }
+          this.sortNotes();
+          */
+          this.closeForm();
+        }
+        return callback && callback();
+      }, _ => this.errorMsg = true);
+  }
+
+  initForm(): void {
+    this.isNewNoteFormOpened = true;
+  }
+
+  closeForm(): void {
+    this.newNote = new Note();
+    this.isNewNoteFormOpened = false;
+    this.errorMsg = false;
+  }
+
+  private afterResponse = (form: NgForm): void => {
+    form.reset();
+    this.onProgress = false;
   }
 
 }

@@ -1,29 +1,6 @@
 <div class="container">
     <h1>Список заметок</h1>
-    <div [hidden]="!errorMsg" class="alert alert-danger" role="alert">
-        Ошибка ввода данных
-    </div>
-    <div class="row">
-        <form class="col-12" *ngIf="isNewNoteFormOpened" (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">
-            <div class="row">
-                <div class="col-8">
-                    <label for="description" class="sr-only">Описание</label>
-                    <input name="description" id="description" [(ngModel)]="newNote.description" type="text" placeholder="Описание" required/>
-                    <label for="sortBy" class="sr-only">Порядок</label>
-                    <input name="sortBy" id="sortBy" [(ngModel)]="newNote.sortBy" type="number" placeholder="Порядок" required/>
-                </div>
-                <div class="col-4 text-right">
-                    <button class="btn" (click)="closeForm()">Отменить</button>
-                    <button class="btn" type="submit" [disabled]="onProgress">Сохранить</button>
-                </div>
-            </div>
-        </form>
-        <div class="col-12">
-            <button type="button" class="btn btn-light float-right" *ngIf="!isNewNoteFormOpened" (click)="initForm()">
-                <span class="oi oi-plus"></span>
-            </button>
-        </div>
-    </div>
+    <app-note-editor [newNote]="editedNote" [isNewNoteFormOpened]="isNoteEditFormOpen" (result)="actualizeListOfNotes($event)"></app-note-editor>
     <div class="list-group">
         <div *ngFor="let note of notes" class="list-group-item">
             <div class="row align-items-center">
