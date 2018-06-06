@@ -18,4 +18,22 @@ public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {
         super(message);
     }
+
+    /**
+     * Create exception with message of user is absent.
+     *
+     * @return exception instance
+     */
+    public static BadRequestException ofUser() {
+        return new BadRequestException("User not found.");
+    }
+
+    /**
+     * Create exception with message of save request with id.
+     *
+     * @return exception instance
+     */
+    public static BadRequestException ofPresentId() {
+        return new BadRequestException("Request should not include id field.");
+    }
 }

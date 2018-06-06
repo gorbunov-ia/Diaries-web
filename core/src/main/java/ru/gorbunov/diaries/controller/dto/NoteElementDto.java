@@ -3,6 +3,9 @@ package ru.gorbunov.diaries.controller.dto;
 import ru.gorbunov.diaries.controller.vm.SortElementVm;
 import ru.gorbunov.diaries.domain.Movable;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,7 +19,16 @@ public class NoteElementDto extends GeneralDto implements Movable {
     /**
      * Note element description.
      */
+    @NotNull
+    @Size(min = 1, max = 64)
     private String description;
+
+    /**
+     * Note identifier.
+     */
+    @NotNull
+    @Min(1)
+    private Integer noteId;
 
     /**
      * Sorting order.
@@ -31,6 +43,7 @@ public class NoteElementDto extends GeneralDto implements Movable {
     /**
      * Class help to swap note elements on UI.
      */
+    @Deprecated
     private SortElementVm sortElementVm;
 
     public String getDescription() {
@@ -39,6 +52,14 @@ public class NoteElementDto extends GeneralDto implements Movable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getNoteId() {
+        return noteId;
+    }
+
+    public void setNoteId(Integer noteId) {
+        this.noteId = noteId;
     }
 
     @Override

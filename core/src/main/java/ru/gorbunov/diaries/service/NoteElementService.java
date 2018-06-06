@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.service;
 
+import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
 
@@ -19,7 +20,7 @@ public interface NoteElementService {
      * @param noteElementId editing note element
      * @param sortBy        new sort by
      * @return note elements with new sort by
-     * @throws NullPointerException if arguments contains null
+     * @throws NullPointerException                               if arguments contains null
      * @throws ru.gorbunov.diaries.exception.SwapElementException if swap failure
      */
     Collection<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
@@ -41,4 +42,28 @@ public interface NoteElementService {
      * @return collection note elements
      */
     List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc);
+
+    /**
+     * Method to create note element for current user.
+     *
+     * @param noteElementDto dto
+     * @return created entity
+     */
+    NoteElement createNoteElement(NoteElementDto noteElementDto);
+
+    /**
+     * Method to delete note element by id.
+     *
+     * @param noteElementId identifier of entity
+     */
+    void deleteNoteElement(Integer noteElementId);
+
+    /**
+     * Method to update note element.
+     *
+     * @param noteElementDto dto
+     * @return updated entity
+     */
+    NoteElement updateNoteElement(NoteElementDto noteElementDto);
+
 }

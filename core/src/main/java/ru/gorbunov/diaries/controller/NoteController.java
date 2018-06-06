@@ -100,7 +100,7 @@ public class NoteController {
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
         log.debug("REST request to create note: {}", noteDto);
         if (Objects.nonNull(noteDto.getId())) {
-            throw new BadRequestException("Request should not include id field.");
+            throw BadRequestException.ofPresentId();
         }
         final Note note = noteService.createNote(noteDto);
         return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));

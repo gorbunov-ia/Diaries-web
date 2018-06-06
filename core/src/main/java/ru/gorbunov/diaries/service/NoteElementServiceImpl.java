@@ -1,29 +1,30 @@
 package ru.gorbunov.diaries.service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import org.apache.commons.lang3.mutable.MutableInt;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
+import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.controller.vm.SortElementVm;
-import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.Movable;
+import ru.gorbunov.diaries.domain.Note;
+import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.User;
+import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
 import ru.gorbunov.diaries.service.helper.SwapHelper;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of service for interaction with note elements.
@@ -54,18 +55,24 @@ public class NoteElementServiceImpl implements NoteElementService {
     private final UserService userService;
 
     /**
+     * Service for interaction with note.
+     */
+    private final NoteService noteService;
+
+    /**
      * Base constructor.
      *
      * @param repository    repository for crud operation with db
      * @param specification specification for add condition into query to db
      * @param userService   service for interaction with user
+     * @param noteService   service for interaction with note
      */
-    public NoteElementServiceImpl(final NoteElementRepository repository,
-                                  final NoteElementSpecification specification,
-                                  final UserService userService) {
+    public NoteElementServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
+                                  final UserService userService, final NoteService noteService) {
         this.noteElementRepository = repository;
         this.noteElementSpecification = specification;
         this.userService = userService;
+        this.noteService = noteService;
     }
 
     @Override
@@ -98,7 +105,7 @@ public class NoteElementServiceImpl implements NoteElementService {
      *
      * @param noteElementId note element id in db
      * @param user          note owner
-     * @return              note element
+     * @return note element
      */
     private Optional<NoteElement> getNoteElementByIdAndUser(final Integer noteElementId, final User user) {
         return noteElementRepository.findOne(Specification.where(noteElementSpecification.byUser(user))
@@ -108,9 +115,9 @@ public class NoteElementServiceImpl implements NoteElementService {
     /**
      * Select note elements between old sort by and new sort by for shift from db.
      *
-     * @param noteElement   note element for change sort by
-     * @param newSortBy     new sort by value
-     * @return              list of note elements
+     * @param noteElement note element for change sort by
+     * @param newSortBy   new sort by value
+     * @return list of note elements
      */
     private List<NoteElement> getNoteElementsForShift(final NoteElement noteElement, final Integer newSortBy) {
         final Integer sortByFirst;
@@ -166,9 +173,54 @@ public class NoteElementServiceImpl implements NoteElementService {
     public List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc) {
         return userService.getUser()
                 .map(user -> noteElementRepository.findAll(Specification
-                        .where(noteElementSpecification.byUser(user))
-                        .and(noteElementSpecification.byNote(noteId)),
+                                .where(noteElementSpecification.byUser(user))
+                                .and(noteElementSpecification.byNote(noteId)),
                         Sort.by(new Sort.Order(noteElementSpecification.getDirection(isDesc), field))))
                 .orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public NoteElement createNoteElement(NoteElementDto noteElementDto) {
+        final Note note = noteService.getUserNoteById(noteElementDto.getNoteId())
+                .orElseThrow(() -> new BadRequestException("Note was not found."));
+        return noteElementRepository.save(getNoteElementFromDto(noteElementDto, note));
+    }
+
+    @Override
+    public void deleteNoteElement(Integer noteElementId) {
+
+    }
+
+    @Override
+    public NoteElement updateNoteElement(NoteElementDto noteElementDto) {
+        return null;
+    }
+
+    /**
+     * Create note element entity and fill field from dto.
+     *
+     * @param noteElementDto dto
+     * @param note           note for set into entity
+     * @return not saved entity
+     */
+    private NoteElement getNoteElementFromDto(NoteElementDto noteElementDto, Note note) {
+        final NoteElement noteElement = new NoteElement();
+        noteElement.setNote(note);
+        noteElement.setDescription(noteElementDto.getDescription());
+        noteElement.setSortBy(getSortBy(note));
+        noteElement.setLastModified(new Date());
+        return noteElement;
+    }
+
+    /**
+     * Return next sort by for current note.
+     *
+     * @param note note for search sort by values
+     * @return next valid sort by value
+     */
+    private Integer getSortBy(Note note) {
+        return Optional
+                .ofNullable(noteElementRepository.getMaxSortByByNoteId(note.getId()))
+                .orElse(0) + 1;
     }
 }

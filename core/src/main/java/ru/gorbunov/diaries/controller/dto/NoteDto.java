@@ -1,5 +1,6 @@
 package ru.gorbunov.diaries.controller.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class NoteDto extends GeneralDto {
      * Sorting order.
      */
     @NotNull
+    @Min(1)
     private Integer sortBy;
 
     /**

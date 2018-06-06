@@ -48,8 +48,7 @@ public class NoteServiceImpl implements NoteService {
      * @param noteSpecification specification for add condition into query to db
      * @param userService       service for interaction with user
      */
-    public NoteServiceImpl(final NoteRepository noteRepository,
-                           final NoteSpecification noteSpecification,
+    public NoteServiceImpl(final NoteRepository noteRepository, final NoteSpecification noteSpecification,
                            final UserService userService) {
         this.noteRepository = noteRepository;
         this.noteSpecification = noteSpecification;
@@ -76,16 +75,15 @@ public class NoteServiceImpl implements NoteService {
     @Transactional
     public Note createNote(NoteDto noteDto) {
         final Optional<User> user = userService.getUser();
-        // todo: validate value
         return noteRepository.save(getNoteFromDto(noteDto,
-                user.orElseThrow(() -> new BadRequestException("User not found."))));
+                user.orElseThrow(BadRequestException::ofUser)));
     }
 
     @Override
     @Transactional
     public void deleteNote(Integer noteId) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
-                .byUser(userService.getUser().orElseThrow(() -> new BadRequestException("User not found.")))
+                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteSpecification.byId(noteId)));
         noteRepository.delete(note.orElseThrow(ResourceNotFoundException::new));
     }
@@ -94,9 +92,8 @@ public class NoteServiceImpl implements NoteService {
     @Transactional
     public Note updateNote(NoteDto noteDto) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
-                .byUser(userService.getUser().orElseThrow(() -> new BadRequestException("User not found.")))
+                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteSpecification.byId(noteDto.getId())));
-        // todo: validate value
         return noteRepository.save(updateNoteFromDto(note.orElseThrow(ResourceNotFoundException::new), noteDto));
     }
 
@@ -104,7 +101,7 @@ public class NoteServiceImpl implements NoteService {
      * Create note entity and fill field from dto.
      *
      * @param noteDto dto
-     * @param user user for set into entity
+     * @param user    user for set into entity
      * @return not saved entity
      */
     private Note getNoteFromDto(NoteDto noteDto, User user) {
@@ -120,7 +117,7 @@ public class NoteServiceImpl implements NoteService {
      * Update note field from dto.
      *
      * @param note note for update
-     * @param dto note dto with new data
+     * @param dto  note dto with new data
      * @return note with new field values
      */
     private Note updateNoteFromDto(Note note, NoteDto dto) {

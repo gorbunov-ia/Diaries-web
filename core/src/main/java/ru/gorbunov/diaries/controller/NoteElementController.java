@@ -16,6 +16,7 @@ import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.controller.vm.SwapElementVm;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
+import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.service.NoteElementService;
 import ru.gorbunov.diaries.service.NoteService;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -112,6 +114,22 @@ public class NoteElementController {
         return ResponseEntity.ok(elements.stream()
                     .map(element -> conversionService.convert(element, NoteElementDto.class))
                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Method to create new note element.
+     *
+     * @param noteElementDto data for create note element
+     * @return dto with created note element
+     */
+    @PostMapping
+    public ResponseEntity<NoteElementDto> createNoteElement(@Valid @RequestBody NoteElementDto noteElementDto) {
+        log.debug("REST request to create note element: {}", noteElementDto);
+        if (Objects.nonNull(noteElementDto.getId())) {
+            throw BadRequestException.ofPresentId();
+        }
+        final NoteElement noteElement = noteElementService.createNoteElement(noteElementDto);
+        return ResponseEntity.ok(conversionService.convert(noteElement, NoteElementDto.class));
     }
 
 }
