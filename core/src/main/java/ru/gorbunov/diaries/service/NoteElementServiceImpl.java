@@ -15,6 +15,7 @@ import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.exception.BadRequestException;
+import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
@@ -188,7 +189,10 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     public void deleteNoteElement(Integer noteElementId) {
-
+        final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
+                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .and(noteElementSpecification.byId(noteElementId)));
+        noteElementRepository.delete(noteElement.orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override

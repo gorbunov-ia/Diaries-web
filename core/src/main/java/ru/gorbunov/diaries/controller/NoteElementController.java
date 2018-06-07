@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -130,6 +132,19 @@ public class NoteElementController {
         }
         final NoteElement noteElement = noteElementService.createNoteElement(noteElementDto);
         return ResponseEntity.ok(conversionService.convert(noteElement, NoteElementDto.class));
+    }
+
+    /**
+     * Method to delete note element from db.
+     *
+     * @param noteElementId note element identification
+     * @return http status
+     */
+    @DeleteMapping("/{noteElementId}")
+    public ResponseEntity<Void> deleteNoteElement(@PathVariable final Integer noteElementId) {
+        log.debug("REST request to delete note element: {}", noteElementId);
+        noteElementService.deleteNoteElement(noteElementId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
 }
