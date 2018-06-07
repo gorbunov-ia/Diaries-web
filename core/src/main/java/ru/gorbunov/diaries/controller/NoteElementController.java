@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -145,6 +146,22 @@ public class NoteElementController {
         log.debug("REST request to delete note element: {}", noteElementId);
         noteElementService.deleteNoteElement(noteElementId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    /**
+     * Method to update note element.
+     *
+     * @param noteElementDto dto
+     * @return dto with new field values
+     */
+    @PutMapping
+    public ResponseEntity<NoteElementDto> updateNote(@Valid @RequestBody NoteElementDto noteElementDto) {
+        log.debug("REST request to update note element: {}", noteElementDto);
+        if (Objects.isNull(noteElementDto.getId())) {
+            throw BadRequestException.ofAbsentId();
+        }
+        final NoteElement noteElement = noteElementService.updateNoteElement(noteElementDto);
+        return ResponseEntity.ok(conversionService.convert(noteElement, NoteElementDto.class));
     }
 
 }

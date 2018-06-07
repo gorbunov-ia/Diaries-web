@@ -36,4 +36,13 @@ public class BadRequestException extends RuntimeException {
     public static BadRequestException ofPresentId() {
         return new BadRequestException("Request should not include id field.");
     }
+
+    /**
+     * Create exception with message of save request without id.
+     *
+     * @return exception instance
+     */
+    public static BadRequestException ofAbsentId() {
+        return new BadRequestException("Request should include id field");
+    }
 }

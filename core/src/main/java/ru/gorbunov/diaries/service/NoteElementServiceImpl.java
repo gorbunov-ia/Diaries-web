@@ -181,6 +181,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     }
 
     @Override
+    @Transactional
     public NoteElement createNoteElement(NoteElementDto noteElementDto) {
         final Note note = noteService.getUserNoteById(noteElementDto.getNoteId())
                 .orElseThrow(() -> new BadRequestException("Note was not found."));
@@ -188,6 +189,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     }
 
     @Override
+    @Transactional
     public void deleteNoteElement(Integer noteElementId) {
         final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
                 .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
@@ -196,8 +198,14 @@ public class NoteElementServiceImpl implements NoteElementService {
     }
 
     @Override
+    @Transactional
     public NoteElement updateNoteElement(NoteElementDto noteElementDto) {
-        return null;
+        final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
+                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .and(noteElementSpecification.byNote(noteElementDto.getNoteId()))
+                .and(noteElementSpecification.byId(noteElementDto.getId())));
+        return noteElementRepository.save(updateNoteElementFromDto(noteElement
+                .orElseThrow(ResourceNotFoundException::new), noteElementDto));
     }
 
     /**
@@ -226,5 +234,18 @@ public class NoteElementServiceImpl implements NoteElementService {
         return Optional
                 .ofNullable(noteElementRepository.getMaxSortByByNoteId(note.getId()))
                 .orElse(0) + 1;
+    }
+
+    /**
+     * Update note element field from dto.
+     *
+     * @param noteElement note element for update
+     * @param dto  note element dto with new data
+     * @return note element with new field values
+     */
+    private NoteElement updateNoteElementFromDto(NoteElement noteElement, NoteElementDto dto) {
+        noteElement.setDescription(dto.getDescription());
+        noteElement.setLastModified(new Date());
+        return noteElement;
     }
 }

@@ -129,7 +129,7 @@ public class NoteController {
     public ResponseEntity<NoteDto> updateNote(@Valid @RequestBody NoteDto noteDto) {
         log.debug("REST request to update note: {}", noteDto);
         if (Objects.isNull(noteDto.getId())) {
-            throw new BadRequestException("Request should include id field.");
+            throw BadRequestException.ofAbsentId();
         }
         final Note note = noteService.updateNote(noteDto);
         return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));
