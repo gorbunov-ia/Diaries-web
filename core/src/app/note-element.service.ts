@@ -19,4 +19,18 @@ export class NoteElementService {
     const url = `${this.notesElementsUrl}/swap`;
     return this.http.post<NoteElement[]>(url, {noteElementId: noteElementId, sortBy: sortBy});
   }
+
+  createNoteElement(noteElement: NoteElement): Observable<NoteElement> {
+    return this.http.post<NoteElement>(this.notesElementsUrl, noteElement);
+  }
+
+  deleteNoteElement(id: number): Observable<any> {
+    const url = `${this.notesElementsUrl}/${id}`;
+    return this.http.delete(url);
+  }
+
+  editNoteElement(noteElement: NoteElement): Observable<NoteElement> {
+    return this.http.put<NoteElement>(this.notesElementsUrl, noteElement);
+  }
+
 }

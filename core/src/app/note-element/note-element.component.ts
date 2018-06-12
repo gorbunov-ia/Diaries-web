@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { Note } from '../note';
 import { NoteElement } from '../note-element';
@@ -14,12 +13,14 @@ import { NoteService } from '../note.service';
 })
 export class NoteElementComponent implements OnInit {
 
-  note: Note;
+  note: Note = new Note();
   notesElements: NoteElement[];
+
+  editedNoteElement: NoteElement;
+  isFormOpen: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private noteElementService: NoteElementService,
     private noteService: NoteService,
     ) { }
@@ -77,4 +78,36 @@ export class NoteElementComponent implements OnInit {
       }
     }
   }
+
+  initEditForm(noteElement: NoteElement) {
+    this.editedNoteElement = noteElement;
+    this.isFormOpen = true;
+  }
+
+  deleteNoteElement(noteElement: NoteElement): void {
+    this.noteElementService.deleteNoteElement(noteElement.id)
+      .subscribe(_ => {
+          const index = this.notesElements.indexOf(noteElement);
+          this.notesElements.splice(index, 1);
+      });
+  }
+
+  actualizeListOfNotesElements(noteElement: NoteElement) {
+    if (this.editedNoteElement) {
+      for (let i = 0; i < this.notesElements.length; i++) {
+        if (this.notesElements[i].id === noteElement.id) {
+          this.notesElements[i] = noteElement;
+          break;
+        }
+      }
+    } else {
+      this.notesElements.push(noteElement);
+    }
+    this.sortNotesElements();
+  }
+
+  private sortNotesElements(): void {
+    this.notesElements.sort((a, b) => b.sortBy - a.sortBy);
+  }
+
 }

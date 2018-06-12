@@ -1,5 +1,11 @@
 <div class="container">
   <h1>{{ note.description }}</h1>
+  <app-note-element-editor 
+    [element]="editedNoteElement" 
+    [isFormOpen]="isFormOpen"
+    [noteId]="note.id"
+    (result)="actualizeListOfNotesElements($event)">
+  </app-note-element-editor>
   <div class="list-group">
     <li class="list-group-item" *ngFor="let noteElement of notesElements; first as isFirst; last as isLast">
       <div class="row">

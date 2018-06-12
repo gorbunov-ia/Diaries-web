@@ -20,6 +20,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AuthGuard } from './auth-guard.service';
 import { XhrInterceptor } from './xhr-interceptor';
 import { NoteEditorComponent } from './note-editor/note-editor.component';
+import { NoteElementEditorComponent } from './note-element-editor/note-element-editor.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { NoteEditorComponent } from './note-editor/note-editor.component';
     NoteComponent,
     NoteElementComponent,
     PageNotFoundComponent,
-    NoteEditorComponent
+    NoteEditorComponent,
+    NoteElementEditorComponent
   ],
   imports: [
     BrowserModule,
