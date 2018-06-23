@@ -17,7 +17,7 @@ export class NoteElementComponent implements OnInit {
   notesElements: NoteElement[];
 
   editedNoteElement: NoteElement;
-  isFormOpen: boolean;
+  isEditFormOpen: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -79,9 +79,18 @@ export class NoteElementComponent implements OnInit {
     }
   }
 
-  initEditForm(noteElement: NoteElement) {
-    this.editedNoteElement = noteElement;
-    this.isFormOpen = true;
+  initEditForm(noteElement: NoteElement): void {
+    this.editedNoteElement = Object.assign({}, noteElement);
+    this.editedNoteElement.noteId = this.note.id;
+    this.isEditFormOpen = true;
+  }
+
+  initCreateForm(): void {
+    this.initEditForm(new NoteElement());
+  }
+
+  closeEditForm(): void {
+      this.isEditFormOpen = false;
   }
 
   deleteNoteElement(noteElement: NoteElement): void {
@@ -93,14 +102,18 @@ export class NoteElementComponent implements OnInit {
   }
 
   actualizeListOfNotesElements(noteElement: NoteElement) {
-    if (this.editedNoteElement) {
-      for (let i = 0; i < this.notesElements.length; i++) {
-        if (this.notesElements[i].id === noteElement.id) {
-          this.notesElements[i] = noteElement;
-          break;
-        }
-      }
+    if (!noteElement) {
+      // delete
+      const index = this.notesElements.findIndex(e => e.id === this.editedNoteElement.id);
+      this.notesElements.splice(index, 1);
+      return;
+    }
+    if (this.editedNoteElement.id) {
+      // update
+      const index = this.notesElements.findIndex(e => e.id === noteElement.id);
+      this.notesElements[index] = noteElement;
     } else {
+      // insert
       this.notesElements.push(noteElement);
     }
     this.sortNotesElements();

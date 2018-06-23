@@ -25,8 +25,12 @@ export class NoteComponent implements OnInit {
   }
 
   initEditForm(note: Note) {
-    this.editedNote = note;
+    this.editedNote = Object.assign({}, note);
     this.isNoteEditFormOpen = true;
+  }
+
+  initCreateForm(): void {
+    this.initEditForm(new Note());
   }
 
   deleteNote(note: Note): void {
@@ -38,7 +42,7 @@ export class NoteComponent implements OnInit {
   }
 
   actualizeListOfNotes(note: Note) {
-    if (this.editedNote) {
+    if (this.editedNote.id) {
       for (let i = 0; i < this.notes.length; i++) {
         if (this.notes[i].id === note.id) {
           this.notes[i] = note;
@@ -49,6 +53,10 @@ export class NoteComponent implements OnInit {
       this.notes.push(note);
     }
     this.sortNotes();
+  }
+
+  closeEditForm(): void {
+    this.isNoteEditFormOpen = false;
   }
 
   private sortNotes(): void {

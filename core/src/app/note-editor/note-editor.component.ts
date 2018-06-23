@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Note } from '../note';
 import { NoteService } from '../note.service';
@@ -12,15 +12,14 @@ import { NoteService } from '../note.service';
 export class NoteEditorComponent implements OnInit {
 
   @Input() newNote: Note;
-  @Input() isNewNoteFormOpened: boolean;
   errorMsg: boolean;
   onProgress: boolean;
   @Output() result = new EventEmitter<Note>();
+  @Output() exit = new EventEmitter<void>();
 
   constructor(private noteService: NoteService) { }
 
   ngOnInit() {
-    this.closeForm();
   }
 
   onSubmit(form: NgForm): void {
@@ -41,8 +40,6 @@ export class NoteEditorComponent implements OnInit {
       .subscribe(result => {
         if (result) {
           this.result.emit(result);
-          // this.notes.push(result);
-          // this.sortNotes();
           this.closeForm();
         }
         return callback && callback();
@@ -55,29 +52,15 @@ export class NoteEditorComponent implements OnInit {
       .subscribe(result => {
         if (result) {
           this.result.emit(result);
-          /*
-          for (let i = 0; i < this.notes.length; i++) {
-            if (this.notes[i].id === result.id) {
-              this.notes[i] = result;
-              break;
-            }
-          }
-          this.sortNotes();
-          */
           this.closeForm();
         }
         return callback && callback();
       }, _ => this.errorMsg = true);
   }
 
-  initForm(): void {
-    this.isNewNoteFormOpened = true;
-  }
-
   closeForm(): void {
-    this.newNote = new Note();
-    this.isNewNoteFormOpened = false;
     this.errorMsg = false;
+    this.exit.emit();
   }
 
   private afterResponse = (form: NgForm): void => {
