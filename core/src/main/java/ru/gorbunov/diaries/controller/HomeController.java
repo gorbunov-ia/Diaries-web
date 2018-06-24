@@ -16,8 +16,7 @@ public class HomeController {
      *
      * @return home page
      */
-    // todo: check path # notes-elements/2; .js
-    @GetMapping(value = "/{path:[^\\.]*}")
+    @GetMapping(value = {"/{path:[^\\.]*}", "/{path:[^\\.]*}/{path:[^\\.]*}"})
     public String redirect() {
         return "forward:/";
     }
