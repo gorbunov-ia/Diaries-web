@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.gorbunov.diaries.controller.dto.UserDto;
 import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.security.SecurityUtils;
-import ru.gorbunov.diaries.service.UserService;
+import ru.gorbunov.diaries.service.UserInternalService;
 
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public class UserController {
     /**
      * Service for interaction with user.
      */
-    private final UserService userService;
+    private final UserInternalService userInternalService;
 
     /**
      * A service interface for type conversion.
@@ -36,11 +36,11 @@ public class UserController {
     /**
      * Base constructor.
      *
-     * @param userService       service for interaction with user
+     * @param userInternalService       service for interaction with user
      * @param conversionService Spring conversion service
      */
-    public UserController(final UserService userService, final ConversionService conversionService) {
-        this.userService = userService;
+    public UserController(final UserInternalService userInternalService, final ConversionService conversionService) {
+        this.userInternalService = userInternalService;
         this.conversionService = conversionService;
     }
 
@@ -51,7 +51,7 @@ public class UserController {
      */
     @GetMapping(path = "")
     public ResponseEntity<UserDto> getCurrentUser() {
-        Optional<User> user = userService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
+        Optional<User> user = userInternalService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

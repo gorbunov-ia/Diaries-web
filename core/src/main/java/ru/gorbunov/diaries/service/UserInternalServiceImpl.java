@@ -19,12 +19,12 @@ import java.util.Optional;
  */
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserInternalServiceImpl implements UserInternalService {
 
     /**
      * Logger for class.
      */
-    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(UserInternalServiceImpl.class);
 
     /**
      * Repository for Users.
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
      * Base constructor.
      * @param repository repository for crud operation with db
      */
-    public UserServiceImpl(final UserRepository repository) {
+    public UserInternalServiceImpl(final UserRepository repository) {
         this.userRepository = repository;
     }
 

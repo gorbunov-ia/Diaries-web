@@ -76,7 +76,7 @@ public class NoteElementServiceTest {
      * Mock user service.
      */
     @Mock
-    private UserService userService;
+    private UserInternalService userInternalService;
     /**
      * Mock note service.
      */
@@ -89,7 +89,7 @@ public class NoteElementServiceTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        service = new NoteElementServiceImpl(noteElementRepository,  noteElementSpecification, userService,
+        service = new NoteElementServiceImpl(noteElementRepository,  noteElementSpecification, userInternalService,
                 noteService);
     }
 
@@ -224,7 +224,7 @@ public class NoteElementServiceTest {
      * Mock get user method.
      */
     private void mockUser() {
-        Mockito.when(userService.getUser()).thenReturn(Optional.of(new User()));
+        Mockito.when(userInternalService.getUser()).thenReturn(Optional.of(new User()));
     }
 
     /**

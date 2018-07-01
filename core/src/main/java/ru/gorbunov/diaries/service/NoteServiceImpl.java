@@ -39,25 +39,25 @@ public class NoteServiceImpl implements NoteService {
     /**
      * Service for interaction with user.
      */
-    private final UserService userService;
+    private final UserInternalService userInternalService;
 
     /**
      * Base constructor.
      *
      * @param noteRepository    repository for crud operation with db
      * @param noteSpecification specification for add condition into query to db
-     * @param userService       service for interaction with user
+     * @param userInternalService       service for interaction with user
      */
     public NoteServiceImpl(final NoteRepository noteRepository, final NoteSpecification noteSpecification,
-                           final UserService userService) {
+                           final UserInternalService userInternalService) {
         this.noteRepository = noteRepository;
         this.noteSpecification = noteSpecification;
-        this.userService = userService;
+        this.userInternalService = userInternalService;
     }
 
     @Override
     public List<Note> getUserNotesWithSort(String field, boolean isDesc) {
-        return userService.getUser()
+        return userInternalService.getUser()
                 .map(user -> noteRepository.findAll(Specification.where(noteSpecification.byUser(user)),
                         Sort.by(new Sort.Order(noteSpecification.getDirection(isDesc), field))))
                 .orElseGet(Collections::emptyList);
@@ -65,7 +65,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Optional<Note> getUserNoteById(Integer noteId) {
-        return userService.getUser()
+        return userInternalService.getUser()
                 .flatMap(user -> noteRepository.findOne(Specification
                         .where(noteSpecification.byUser(user))
                         .and(noteSpecification.byId(noteId))));
@@ -74,7 +74,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional
     public Note createNote(NoteDto noteDto) {
-        final Optional<User> user = userService.getUser();
+        final Optional<User> user = userInternalService.getUser();
         return noteRepository.save(getNoteFromDto(noteDto,
                 user.orElseThrow(BadRequestException::ofUser)));
     }
@@ -83,7 +83,7 @@ public class NoteServiceImpl implements NoteService {
     @Transactional
     public void deleteNote(Integer noteId) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
-                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteSpecification.byId(noteId)));
         noteRepository.delete(note.orElseThrow(ResourceNotFoundException::new));
     }
@@ -92,7 +92,7 @@ public class NoteServiceImpl implements NoteService {
     @Transactional
     public Note updateNote(NoteDto noteDto) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
-                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteSpecification.byId(noteDto.getId())));
         return noteRepository.save(updateNoteFromDto(note.orElseThrow(ResourceNotFoundException::new), noteDto));
     }

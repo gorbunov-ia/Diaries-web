@@ -53,7 +53,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     /**
      * Service for interaction with user.
      */
-    private final UserService userService;
+    private final UserInternalService userInternalService;
 
     /**
      * Service for interaction with note.
@@ -65,14 +65,14 @@ public class NoteElementServiceImpl implements NoteElementService {
      *
      * @param repository    repository for crud operation with db
      * @param specification specification for add condition into query to db
-     * @param userService   service for interaction with user
+     * @param userInternalService   service for interaction with user
      * @param noteService   service for interaction with note
      */
-    public NoteElementServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
-                                  final UserService userService, final NoteService noteService) {
+    NoteElementServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
+                           final UserInternalService userInternalService, final NoteService noteService) {
         this.noteElementRepository = repository;
         this.noteElementSpecification = specification;
-        this.userService = userService;
+        this.userInternalService = userInternalService;
         this.noteService = noteService;
     }
 
@@ -82,7 +82,7 @@ public class NoteElementServiceImpl implements NoteElementService {
         if (noteElementId == null || sortBy == null) {
             throw new NullPointerException("Arguments must be not null.");
         }
-        final Optional<User> user = userService.getUser();
+        final Optional<User> user = userInternalService.getUser();
         if (!user.isPresent()) {
             throw new SwapElementException();
         }
@@ -172,7 +172,7 @@ public class NoteElementServiceImpl implements NoteElementService {
 
     @Override
     public List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc) {
-        return userService.getUser()
+        return userInternalService.getUser()
                 .map(user -> noteElementRepository.findAll(Specification
                                 .where(noteElementSpecification.byUser(user))
                                 .and(noteElementSpecification.byNote(noteId)),
@@ -192,7 +192,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     @Transactional
     public void deleteNoteElement(Integer noteElementId) {
         final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
-                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteElementSpecification.byId(noteElementId)));
         noteElementRepository.delete(noteElement.orElseThrow(ResourceNotFoundException::new));
     }
@@ -201,7 +201,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     @Transactional
     public NoteElement updateNoteElement(NoteElementDto noteElementDto) {
         final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
-                .byUser(userService.getUser().orElseThrow(BadRequestException::ofUser))
+                .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
                 .and(noteElementSpecification.byNote(noteElementDto.getNoteId()))
                 .and(noteElementSpecification.byId(noteElementDto.getId())));
         return noteElementRepository.save(updateNoteElementFromDto(noteElement

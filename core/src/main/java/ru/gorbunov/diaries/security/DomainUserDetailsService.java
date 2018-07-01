@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.gorbunov.diaries.exception.UserNotActivatedException;
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.service.UserService;
+import ru.gorbunov.diaries.service.UserInternalService;
 
 /**
  * Implementation of service for interaction with User Details.
@@ -36,15 +36,15 @@ public class DomainUserDetailsService implements UserDetailsService {
     /**
      * Service for interaction with user.
      */
-    private final UserService userService;
+    private final UserInternalService userInternalService;
 
     /**
      * Base constructor.
      *
-     * @param userService service for interaction with user
+     * @param userInternalService service for interaction with user
      */
-    public DomainUserDetailsService(final UserService userService) {
-        this.userService = userService;
+    public DomainUserDetailsService(final UserInternalService userInternalService) {
+        this.userInternalService = userInternalService;
     }
 
     /**
@@ -55,7 +55,7 @@ public class DomainUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userFromDatabase = userService.getUserByLogin(lowercaseLogin);
+        Optional<User> userFromDatabase = userInternalService.getUserByLogin(lowercaseLogin);
         return userFromDatabase.map(user -> {
             if (!user.getIsActive()) {
                 throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");

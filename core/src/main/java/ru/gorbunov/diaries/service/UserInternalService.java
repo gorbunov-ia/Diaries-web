@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * @author Gorbunov.ia
  */
-public interface UserService {
+public interface UserInternalService {
 
     /**
      * Method get user by login.
