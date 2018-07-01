@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.gorbunov.diaries.controller.dto.UserDto;
 import ru.gorbunov.diaries.domain.User;
 import ru.gorbunov.diaries.security.SecurityUtils;
-import ru.gorbunov.diaries.service.UserInternalService;
+import ru.gorbunov.diaries.service.internal.UserInternalService;
 
 import java.util.Optional;
 

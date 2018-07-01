@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.service;
+package ru.gorbunov.diaries.service.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.exception.SwapElementException;
 import ru.gorbunov.diaries.repository.NoteElementRepository;
 import ru.gorbunov.diaries.repository.specification.NoteElementSpecification;
-import ru.gorbunov.diaries.service.helper.SwapHelper;
+import ru.gorbunov.diaries.service.internal.helper.SwapHelper;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.service;
+package ru.gorbunov.diaries.service.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

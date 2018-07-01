@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.gorbunov.diaries.exception.UserNotActivatedException;
 import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.service.UserInternalService;
+import ru.gorbunov.diaries.service.internal.UserInternalService;
 
 /**
  * Implementation of service for interaction with User Details.

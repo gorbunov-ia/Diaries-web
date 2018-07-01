@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.service.helper;
+package ru.gorbunov.diaries.service.internal.helper;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.gorbunov.diaries.domain.Swappable;

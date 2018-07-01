@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.service;
+package ru.gorbunov.diaries.service.internal;
 
 import ru.gorbunov.diaries.domain.User;
 

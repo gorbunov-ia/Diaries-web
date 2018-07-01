@@ -1,4 +1,4 @@
-package ru.gorbunov.diaries.service;
+package ru.gorbunov.diaries.service.internal;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;

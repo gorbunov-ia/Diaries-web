@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.exception.BadRequestException;
-import ru.gorbunov.diaries.service.NoteInternalService;
+import ru.gorbunov.diaries.service.internal.NoteInternalService;
 
 import javax.validation.Valid;
 

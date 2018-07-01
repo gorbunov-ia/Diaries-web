@@ -21,8 +21,8 @@ import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
-import ru.gorbunov.diaries.service.NoteElementInternalService;
-import ru.gorbunov.diaries.service.NoteInternalService;
+import ru.gorbunov.diaries.service.internal.NoteElementInternalService;
+import ru.gorbunov.diaries.service.internal.NoteInternalService;
 
 import javax.validation.Valid;
 import java.util.Collection;
