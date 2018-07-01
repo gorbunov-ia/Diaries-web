@@ -5,7 +5,7 @@ import ru.gorbunov.diaries.domain.User;
 import java.util.Optional;
 
 /**
- * Service for interaction with user.
+ * Internal service for interaction with user.
  *
  * @author Gorbunov.ia
  */

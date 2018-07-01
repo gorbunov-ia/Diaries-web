@@ -33,6 +33,7 @@ public class UserInternalServiceImpl implements UserInternalService {
 
     /**
      * Base constructor.
+     *
      * @param repository repository for crud operation with db
      */
     public UserInternalServiceImpl(final UserRepository repository) {

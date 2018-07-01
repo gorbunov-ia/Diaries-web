@@ -1,6 +1,5 @@
 package ru.gorbunov.diaries.controller;
 
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.controller.dto.UserDto;
-import ru.gorbunov.diaries.domain.User;
-import ru.gorbunov.diaries.security.SecurityUtils;
-import ru.gorbunov.diaries.service.internal.UserInternalService;
+import ru.gorbunov.diaries.service.UserService;
 
 import java.util.Optional;
 
@@ -26,22 +23,15 @@ public class UserController {
     /**
      * Service for interaction with user.
      */
-    private final UserInternalService userInternalService;
-
-    /**
-     * A service interface for type conversion.
-     */
-    private final ConversionService conversionService;
+    private final UserService userService;
 
     /**
      * Base constructor.
      *
-     * @param userInternalService       service for interaction with user
-     * @param conversionService Spring conversion service
+     * @param userService service for interaction with user
      */
-    public UserController(final UserInternalService userInternalService, final ConversionService conversionService) {
-        this.userInternalService = userInternalService;
-        this.conversionService = conversionService;
+    public UserController(final UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -51,12 +41,9 @@ public class UserController {
      */
     @GetMapping(path = "")
     public ResponseEntity<UserDto> getCurrentUser() {
-        Optional<User> user = userInternalService.getUserByLogin(SecurityUtils.getCurrentUserLogin());
-        if (!user.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        UserDto result = conversionService.convert(user.get(), UserDto.class);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Optional<UserDto> user = userService.getUser();
+        return user.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }
