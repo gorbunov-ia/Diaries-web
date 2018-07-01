@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Gorbunov.ia
  */
-public interface NoteElementService {
+public interface NoteElementInternalService {
 
     /**
      * Method set new sort by for note element with shift.

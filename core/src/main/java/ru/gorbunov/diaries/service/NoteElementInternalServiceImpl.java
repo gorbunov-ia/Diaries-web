@@ -33,12 +33,12 @@ import java.util.Optional;
  * @author Gorbunov.ia
  */
 @Service
-public class NoteElementServiceImpl implements NoteElementService {
+public class NoteElementInternalServiceImpl implements NoteElementInternalService {
 
     /**
      * Logger for class.
      */
-    private final Logger log = LoggerFactory.getLogger(NoteElementServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(NoteElementInternalServiceImpl.class);
 
     /**
      * Repository for Note Elements.
@@ -68,9 +68,9 @@ public class NoteElementServiceImpl implements NoteElementService {
      * @param userInternalService   service for interaction with user
      * @param noteInternalService   service for interaction with note
      */
-    NoteElementServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
-                           final UserInternalService userInternalService,
-                           final NoteInternalService noteInternalService) {
+    NoteElementInternalServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
+                                   final UserInternalService userInternalService,
+                                   final NoteInternalService noteInternalService) {
         this.noteElementRepository = repository;
         this.noteElementSpecification = specification;
         this.userInternalService = userInternalService;

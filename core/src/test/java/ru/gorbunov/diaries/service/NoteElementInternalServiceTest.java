@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Test for NoteElementServiceImpl class.
+ * Test for NoteElementInternalServiceImpl class.
  *
  * @author Gorbunov.ia
  */
-public class NoteElementServiceTest {
+public class NoteElementInternalServiceTest {
 
     /**
      * Const.
@@ -62,7 +62,7 @@ public class NoteElementServiceTest {
     /**
      * Main service for test.
      */
-    private NoteElementService service;
+    private NoteElementInternalService service;
     /**
      * Mock repository.
      */
@@ -89,8 +89,8 @@ public class NoteElementServiceTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        service = new NoteElementServiceImpl(noteElementRepository,  noteElementSpecification, userInternalService,
-                noteInternalService);
+        service = new NoteElementInternalServiceImpl(noteElementRepository, noteElementSpecification,
+                userInternalService, noteInternalService);
     }
 
     /**
