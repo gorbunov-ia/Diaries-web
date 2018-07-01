@@ -3,7 +3,6 @@ package ru.gorbunov.diaries.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,21 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.controller.vm.SwapElementVm;
-import ru.gorbunov.diaries.domain.Note;
-import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
-import ru.gorbunov.diaries.service.internal.NoteElementInternalService;
-import ru.gorbunov.diaries.service.internal.NoteInternalService;
+import ru.gorbunov.diaries.service.NoteElementService;
+import ru.gorbunov.diaries.service.NoteService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Controller for note elements page.
@@ -43,36 +39,27 @@ public class NoteElementController {
     /**
      * Logger for class.
      */
-    private final Logger log = LoggerFactory.getLogger(NoteController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NoteController.class);
 
     /**
      * Service for interaction with notes.
      */
-    private final NoteInternalService noteInternalService;
+    private final NoteService noteService;
 
     /**
      * Service for interaction with note elements.
      */
-    private final NoteElementInternalService noteElementInternalService;
-
-    /**
-     * A service interface for type conversion.
-     */
-    private final ConversionService conversionService;
+    private final NoteElementService noteElementService;
 
     /**
      * Base constructor.
      *
-     * @param noteInternalService        service for interaction with notes.
-     * @param noteElementInternalService service for interaction with note elements.
-     * @param conversionService  Spring conversion service
+     * @param noteService        service for interaction with notes.
+     * @param noteElementService service for interaction with note elements.
      */
-    public NoteElementController(final NoteInternalService noteInternalService,
-                                 final NoteElementInternalService noteElementInternalService,
-                                 final ConversionService conversionService) {
-        this.noteInternalService = noteInternalService;
-        this.noteElementInternalService = noteElementInternalService;
-        this.conversionService = conversionService;
+    public NoteElementController(final NoteService noteService, final NoteElementService noteElementService) {
+        this.noteService = noteService;
+        this.noteElementService = noteElementService;
     }
 
     /**
@@ -84,22 +71,14 @@ public class NoteElementController {
      */
     @GetMapping("/{noteId}")
     public ResponseEntity<List<NoteElementDto>> getAllNoteElements(@PathVariable final Integer noteId) {
-        log.debug("REST request to get NotesElements.");
-
-        final Optional<Note> note = noteInternalService.getUserNoteById(noteId);
+        LOG.debug("REST request to get NotesElements.");
+        final Optional<NoteDto> note = noteService.getUserNoteById(noteId);
         if (!note.isPresent()) {
             throw new ResourceNotFoundException();
         }
-        final List<NoteElement> notesElements = noteElementInternalService
+        final List<NoteElementDto> notesElements = noteElementService
                 .getUserNoteElementsByNoteWithSort(note.get().getId(), "sortBy", true);
-        if (notesElements.isEmpty()) {
-            return ResponseEntity.ok(Collections.emptyList());
-        }
-        final List<NoteElementDto> notesElementsDto = notesElements.stream()
-                .map(noteElement -> conversionService.convert(noteElement, NoteElementDto.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(notesElementsDto);
+        return ResponseEntity.ok(notesElements);
     }
 
     /**
@@ -110,12 +89,10 @@ public class NoteElementController {
      */
     @PostMapping(value = "/swap")
     public ResponseEntity<Collection<NoteElementDto>> swap(@Valid @RequestBody SwapElementVm swapElementVm) {
-        log.debug("REST request to swap Note Element.");
-        Collection<NoteElement> elements = noteElementInternalService.changeSortBy(swapElementVm.getNoteElementId(),
-                                                                           swapElementVm.getSortBy());
-        return ResponseEntity.ok(elements.stream()
-                    .map(element -> conversionService.convert(element, NoteElementDto.class))
-                    .collect(Collectors.toList()));
+        LOG.debug("REST request to swap Note Element.");
+        Collection<NoteElementDto> elements = noteElementService.changeSortBy(swapElementVm.getNoteElementId(),
+                swapElementVm.getSortBy());
+        return ResponseEntity.ok(elements);
     }
 
     /**
@@ -126,12 +103,12 @@ public class NoteElementController {
      */
     @PostMapping
     public ResponseEntity<NoteElementDto> createNoteElement(@Valid @RequestBody NoteElementDto noteElementDto) {
-        log.debug("REST request to create note element: {}", noteElementDto);
+        LOG.debug("REST request to create note element: {}", noteElementDto);
         if (noteElementDto.getId() != null) {
             throw BadRequestException.ofPresentId();
         }
-        final NoteElement noteElement = noteElementInternalService.createNoteElement(noteElementDto);
-        return ResponseEntity.ok(conversionService.convert(noteElement, NoteElementDto.class));
+        final NoteElementDto noteElement = noteElementService.createNoteElement(noteElementDto);
+        return ResponseEntity.ok(noteElement);
     }
 
     /**
@@ -142,8 +119,8 @@ public class NoteElementController {
      */
     @DeleteMapping("/{noteElementId}")
     public ResponseEntity<Void> deleteNoteElement(@PathVariable final Integer noteElementId) {
-        log.debug("REST request to delete note element: {}", noteElementId);
-        noteElementInternalService.deleteNoteElement(noteElementId);
+        LOG.debug("REST request to delete note element: {}", noteElementId);
+        noteElementService.deleteNoteElement(noteElementId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
@@ -155,12 +132,12 @@ public class NoteElementController {
      */
     @PutMapping
     public ResponseEntity<NoteElementDto> updateNote(@Valid @RequestBody NoteElementDto noteElementDto) {
-        log.debug("REST request to update note element: {}", noteElementDto);
+        LOG.debug("REST request to update note element: {}", noteElementDto);
         if (noteElementDto.getId() == null) {
             throw BadRequestException.ofAbsentId();
         }
-        final NoteElement noteElement = noteElementInternalService.updateNoteElement(noteElementDto);
-        return ResponseEntity.ok(conversionService.convert(noteElement, NoteElementDto.class));
+        final NoteElementDto noteElement = noteElementService.updateNoteElement(noteElementDto);
+        return ResponseEntity.ok(noteElement);
     }
 
 }

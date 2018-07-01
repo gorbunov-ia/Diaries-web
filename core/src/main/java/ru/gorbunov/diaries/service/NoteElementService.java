@@ -1,37 +1,27 @@
-package ru.gorbunov.diaries.service.internal;
+package ru.gorbunov.diaries.service;
 
 import ru.gorbunov.diaries.controller.dto.NoteElementDto;
-import ru.gorbunov.diaries.domain.NoteElement;
-import ru.gorbunov.diaries.domain.Movable;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Internal service for interaction with note elements.
+ * Service for interaction with note elements.
  *
  * @author Gorbunov.ia
  */
-public interface NoteElementInternalService {
+public interface NoteElementService {
 
     /**
      * Method set new sort by for note element with shift.
      *
      * @param noteElementId editing note element
      * @param sortBy        new sort by
-     * @return note elements with new sort by
+     * @return collection of note element dto with new sort by
      * @throws NullPointerException                               if arguments contains null
      * @throws ru.gorbunov.diaries.exception.SwapElementException if swap failure
      */
-    Collection<NoteElement> changeSortBy(Integer noteElementId, Integer sortBy);
-
-    /**
-     * Add sortElementVm (helper on UI) to each note element.
-     *
-     * @param movables list of movable elements without sortElementVm
-     */
-    @Deprecated
-    void fillSortElement(List<? extends Movable> movables);
+    Collection<NoteElementDto> changeSortBy(Integer noteElementId, Integer sortBy);
 
     /**
      * Method to get note elements for current user and note id with sorting.
@@ -41,15 +31,15 @@ public interface NoteElementInternalService {
      * @param isDesc ascending or descending sort
      * @return collection note elements
      */
-    List<NoteElement> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc);
+    List<NoteElementDto> getUserNoteElementsByNoteWithSort(Integer noteId, String field, boolean isDesc);
 
     /**
      * Method to create note element for current user.
      *
      * @param noteElementDto dto
-     * @return created entity
+     * @return dto of created entity
      */
-    NoteElement createNoteElement(NoteElementDto noteElementDto);
+    NoteElementDto createNoteElement(NoteElementDto noteElementDto);
 
     /**
      * Method to delete note element by id.
@@ -62,8 +52,9 @@ public interface NoteElementInternalService {
      * Method to update note element.
      *
      * @param noteElementDto dto
-     * @return updated entity
+     * @return dto of updated entity
      */
-    NoteElement updateNoteElement(NoteElementDto noteElementDto);
+    NoteElementDto updateNoteElement(NoteElementDto noteElementDto);
+
 
 }

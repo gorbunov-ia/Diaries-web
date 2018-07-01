@@ -3,11 +3,11 @@ package ru.gorbunov.diaries.service.internal;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
+
 import ru.gorbunov.diaries.controller.dto.NoteElementDto;
 import ru.gorbunov.diaries.controller.vm.SortElementVm;
 import ru.gorbunov.diaries.domain.Movable;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation of service for interaction with note elements.
+ * Implementation of internal service for interaction with note elements.
  *
  * @author Gorbunov.ia
  */
@@ -78,7 +78,6 @@ public class NoteElementInternalServiceImpl implements NoteElementInternalServic
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Collection<NoteElement> changeSortBy(final Integer noteElementId, final Integer sortBy) {
         if (noteElementId == null || sortBy == null) {
             throw new NullPointerException("Arguments must be not null.");
@@ -182,7 +181,6 @@ public class NoteElementInternalServiceImpl implements NoteElementInternalServic
     }
 
     @Override
-    @Transactional
     public NoteElement createNoteElement(NoteElementDto noteElementDto) {
         final Note note = noteInternalService.getUserNoteById(noteElementDto.getNoteId())
                 .orElseThrow(() -> new BadRequestException("Note was not found."));
@@ -190,7 +188,6 @@ public class NoteElementInternalServiceImpl implements NoteElementInternalServic
     }
 
     @Override
-    @Transactional
     public void deleteNoteElement(Integer noteElementId) {
         final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
                 .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
@@ -199,7 +196,6 @@ public class NoteElementInternalServiceImpl implements NoteElementInternalServic
     }
 
     @Override
-    @Transactional
     public NoteElement updateNoteElement(NoteElementDto noteElementDto) {
         final Optional<NoteElement> noteElement = noteElementRepository.findOne(noteElementSpecification
                 .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
