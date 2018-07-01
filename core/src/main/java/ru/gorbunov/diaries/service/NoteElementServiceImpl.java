@@ -58,7 +58,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     /**
      * Service for interaction with note.
      */
-    private final NoteService noteService;
+    private final NoteInternalService noteInternalService;
 
     /**
      * Base constructor.
@@ -66,14 +66,15 @@ public class NoteElementServiceImpl implements NoteElementService {
      * @param repository    repository for crud operation with db
      * @param specification specification for add condition into query to db
      * @param userInternalService   service for interaction with user
-     * @param noteService   service for interaction with note
+     * @param noteInternalService   service for interaction with note
      */
     NoteElementServiceImpl(final NoteElementRepository repository, final NoteElementSpecification specification,
-                           final UserInternalService userInternalService, final NoteService noteService) {
+                           final UserInternalService userInternalService,
+                           final NoteInternalService noteInternalService) {
         this.noteElementRepository = repository;
         this.noteElementSpecification = specification;
         this.userInternalService = userInternalService;
-        this.noteService = noteService;
+        this.noteInternalService = noteInternalService;
     }
 
     @Override
@@ -183,7 +184,7 @@ public class NoteElementServiceImpl implements NoteElementService {
     @Override
     @Transactional
     public NoteElement createNoteElement(NoteElementDto noteElementDto) {
-        final Note note = noteService.getUserNoteById(noteElementDto.getNoteId())
+        final Note note = noteInternalService.getUserNoteById(noteElementDto.getNoteId())
                 .orElseThrow(() -> new BadRequestException("Note was not found."));
         return noteElementRepository.save(getNoteElementFromDto(noteElementDto, note));
     }

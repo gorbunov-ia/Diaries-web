@@ -22,7 +22,7 @@ import ru.gorbunov.diaries.domain.NoteElement;
 import ru.gorbunov.diaries.exception.BadRequestException;
 import ru.gorbunov.diaries.exception.ResourceNotFoundException;
 import ru.gorbunov.diaries.service.NoteElementService;
-import ru.gorbunov.diaries.service.NoteService;
+import ru.gorbunov.diaries.service.NoteInternalService;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -49,7 +49,7 @@ public class NoteElementController {
     /**
      * Service for interaction with notes.
      */
-    private final NoteService noteService;
+    private final NoteInternalService noteInternalService;
 
     /**
      * Service for interaction with note elements.
@@ -64,14 +64,14 @@ public class NoteElementController {
     /**
      * Base constructor.
      *
-     * @param noteService        service for interaction with notes.
+     * @param noteInternalService        service for interaction with notes.
      * @param noteElementService service for interaction with note elements.
      * @param conversionService  Spring conversion service
      */
-    public NoteElementController(final NoteService noteService,
+    public NoteElementController(final NoteInternalService noteInternalService,
                                  final NoteElementService noteElementService,
                                  final ConversionService conversionService) {
-        this.noteService = noteService;
+        this.noteInternalService = noteInternalService;
         this.noteElementService = noteElementService;
         this.conversionService = conversionService;
     }
@@ -87,7 +87,7 @@ public class NoteElementController {
     public ResponseEntity<List<NoteElementDto>> getAllNoteElements(@PathVariable final Integer noteId) {
         log.debug("REST request to get NotesElements.");
 
-        final Optional<Note> note = noteService.getUserNoteById(noteId);
+        final Optional<Note> note = noteInternalService.getUserNoteById(noteId);
         if (!note.isPresent()) {
             throw new ResourceNotFoundException();
         }

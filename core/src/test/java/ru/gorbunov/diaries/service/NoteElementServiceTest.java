@@ -81,7 +81,7 @@ public class NoteElementServiceTest {
      * Mock note service.
      */
     @Mock
-    private NoteService noteService;
+    private NoteInternalService noteInternalService;
 
     /**
      * Standard junit initialize method.
@@ -90,7 +90,7 @@ public class NoteElementServiceTest {
     public void init() {
         MockitoAnnotations.initMocks(this);
         service = new NoteElementServiceImpl(noteElementRepository,  noteElementSpecification, userInternalService,
-                noteService);
+                noteInternalService);
     }
 
     /**

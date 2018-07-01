@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @author Gorbunov.ia
  */
-public interface NoteService {
+public interface NoteInternalService {
 
     /**
      * Method to get notes for current user with sorting.

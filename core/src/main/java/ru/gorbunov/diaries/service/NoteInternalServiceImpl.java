@@ -24,7 +24,7 @@ import java.util.Optional;
  * @author Gorbunov.ia
  */
 @Service
-public class NoteServiceImpl implements NoteService {
+public class NoteInternalServiceImpl implements NoteInternalService {
 
     /**
      * Repository for Note.
@@ -48,8 +48,8 @@ public class NoteServiceImpl implements NoteService {
      * @param noteSpecification specification for add condition into query to db
      * @param userInternalService       service for interaction with user
      */
-    public NoteServiceImpl(final NoteRepository noteRepository, final NoteSpecification noteSpecification,
-                           final UserInternalService userInternalService) {
+    public NoteInternalServiceImpl(final NoteRepository noteRepository, final NoteSpecification noteSpecification,
+                                   final UserInternalService userInternalService) {
         this.noteRepository = noteRepository;
         this.noteSpecification = noteSpecification;
         this.userInternalService = userInternalService;
