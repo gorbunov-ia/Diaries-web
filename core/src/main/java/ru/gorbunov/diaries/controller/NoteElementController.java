@@ -28,7 +28,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -128,7 +127,7 @@ public class NoteElementController {
     @PostMapping
     public ResponseEntity<NoteElementDto> createNoteElement(@Valid @RequestBody NoteElementDto noteElementDto) {
         log.debug("REST request to create note element: {}", noteElementDto);
-        if (Objects.nonNull(noteElementDto.getId())) {
+        if (noteElementDto.getId() != null) {
             throw BadRequestException.ofPresentId();
         }
         final NoteElement noteElement = noteElementInternalService.createNoteElement(noteElementDto);
@@ -157,7 +156,7 @@ public class NoteElementController {
     @PutMapping
     public ResponseEntity<NoteElementDto> updateNote(@Valid @RequestBody NoteElementDto noteElementDto) {
         log.debug("REST request to update note element: {}", noteElementDto);
-        if (Objects.isNull(noteElementDto.getId())) {
+        if (noteElementDto.getId() == null) {
             throw BadRequestException.ofAbsentId();
         }
         final NoteElement noteElement = noteElementInternalService.updateNoteElement(noteElementDto);

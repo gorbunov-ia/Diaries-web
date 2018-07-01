@@ -3,7 +3,6 @@ package ru.gorbunov.diaries.service.internal;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import ru.gorbunov.diaries.controller.dto.NoteDto;
 import ru.gorbunov.diaries.domain.Note;
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation of service for interaction with notes.
+ * Implementation of internal service for interaction with notes.
  *
  * @author Gorbunov.ia
  */
@@ -72,7 +71,6 @@ public class NoteInternalServiceImpl implements NoteInternalService {
     }
 
     @Override
-    @Transactional
     public Note createNote(NoteDto noteDto) {
         final Optional<User> user = userInternalService.getUser();
         return noteRepository.save(getNoteFromDto(noteDto,
@@ -80,7 +78,6 @@ public class NoteInternalServiceImpl implements NoteInternalService {
     }
 
     @Override
-    @Transactional
     public void deleteNote(Integer noteId) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
                 .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))
@@ -89,7 +86,6 @@ public class NoteInternalServiceImpl implements NoteInternalService {
     }
 
     @Override
-    @Transactional
     public Note updateNote(NoteDto noteDto) {
         final Optional<Note> note = noteRepository.findOne(noteSpecification
                 .byUser(userInternalService.getUser().orElseThrow(BadRequestException::ofUser))

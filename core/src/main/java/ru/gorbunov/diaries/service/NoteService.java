@@ -1,42 +1,41 @@
-package ru.gorbunov.diaries.service.internal;
+package ru.gorbunov.diaries.service;
 
 import ru.gorbunov.diaries.controller.dto.NoteDto;
-import ru.gorbunov.diaries.domain.Note;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Internal service for interaction with notes.
+ * Service for interaction with notes.
  *
  * @author Gorbunov.ia
  */
-public interface NoteInternalService {
+public interface NoteService {
 
     /**
      * Method to get notes for current user with sorting.
      *
-     * @param field     sorting field
-     * @param isDesc    ascending or descending sort
-     * @return          collection note entity
+     * @param field  sorting field
+     * @param isDesc ascending or descending sort
+     * @return collection of note dto
      */
-    List<Note> getUserNotesWithSort(String field, boolean isDesc);
+    List<NoteDto> getUserNotesWithSort(String field, boolean isDesc);
 
     /**
      * Method to get note for current user by note id.
      *
      * @param noteId note id in db
-     * @return note entity or null if note id does not exist for current user
+     * @return note dto if note id exist for current user
      */
-    Optional<Note> getUserNoteById(Integer noteId);
+    Optional<NoteDto> getUserNoteById(Integer noteId);
 
     /**
      * Method to create note for current user.
      *
      * @param noteDto dto
-     * @return created entity
+     * @return dto of created entity
      */
-    Note createNote(NoteDto noteDto);
+    NoteDto createNote(NoteDto noteDto);
 
     /**
      * Method to delete note by id.
@@ -49,8 +48,8 @@ public interface NoteInternalService {
      * Method to update note.
      *
      * @param noteDto dto
-     * @return updated entity
+     * @return dto of updated entity
      */
-    Note updateNote(NoteDto noteDto);
+    NoteDto updateNote(NoteDto noteDto);
 
 }

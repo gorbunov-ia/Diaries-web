@@ -1,14 +1,8 @@
 package ru.gorbunov.diaries.controller;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.gorbunov.diaries.controller.dto.NoteDto;
-import ru.gorbunov.diaries.domain.Note;
 import ru.gorbunov.diaries.exception.BadRequestException;
-import ru.gorbunov.diaries.service.internal.NoteInternalService;
+import ru.gorbunov.diaries.service.NoteService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for notes page.
@@ -39,27 +34,20 @@ public class NoteController {
     /**
      * Logger for class.
      */
-    private final Logger log = LoggerFactory.getLogger(NoteController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NoteController.class);
 
     /**
      * Service for interaction with notes.
      */
-    private final NoteInternalService noteInternalService;
-
-    /**
-     * A service interface for type conversion.
-     */
-    private final ConversionService conversionService;
+    private final NoteService noteService;
 
     /**
      * Base constructor.
      *
-     * @param noteInternalService service for interaction with notes.
-     * @param conversionService Spring conversion service
+     * @param noteService service for interaction with notes.
      */
-    public NoteController(final NoteInternalService noteInternalService, ConversionService conversionService) {
-        this.noteInternalService = noteInternalService;
-        this.conversionService = conversionService;
+    public NoteController(final NoteService noteService) {
+        this.noteService = noteService;
     }
 
     /**
@@ -69,10 +57,8 @@ public class NoteController {
      */
     @GetMapping
     public ResponseEntity<List<NoteDto>> getAllNotes() {
-        log.debug("REST request to get Notes.");
-        final List<Note> notes = noteInternalService.getUserNotesWithSort("sortBy", true);
-        List<NoteDto> notesDto = notes.stream().map(note -> conversionService.convert(note, NoteDto.class))
-                .collect(Collectors.toList());
+        LOG.debug("REST request to get Notes.");
+        final List<NoteDto> notesDto = noteService.getUserNotesWithSort("sortBy", true);
         return ResponseEntity.ok(notesDto);
     }
 
@@ -84,9 +70,9 @@ public class NoteController {
      */
     @GetMapping("/{noteId}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable final Integer noteId) {
-        log.debug("REST request to get Note: {}", noteId);
-        final Optional<Note> note = noteInternalService.getUserNoteById(noteId);
-        return note.map((element) -> ResponseEntity.ok(conversionService.convert(element, NoteDto.class)))
+        LOG.debug("REST request to get Note: {}", noteId);
+        final Optional<NoteDto> noteDto = noteService.getUserNoteById(noteId);
+        return noteDto.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -98,12 +84,12 @@ public class NoteController {
      */
     @PostMapping
     public ResponseEntity<NoteDto> createNote(@Valid @RequestBody NoteDto noteDto) {
-        log.debug("REST request to create note: {}", noteDto);
-        if (Objects.nonNull(noteDto.getId())) {
+        LOG.debug("REST request to create note: {}", noteDto);
+        if (noteDto.getId() != null) {
             throw BadRequestException.ofPresentId();
         }
-        final Note note = noteInternalService.createNote(noteDto);
-        return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));
+        final NoteDto note = noteService.createNote(noteDto);
+        return ResponseEntity.ok(note);
     }
 
     /**
@@ -114,8 +100,8 @@ public class NoteController {
      */
     @DeleteMapping("/{noteId}")
     public ResponseEntity<Void> deleteNote(@PathVariable final Integer noteId) {
-        log.debug("REST request to delete note: {}", noteId);
-        noteInternalService.deleteNote(noteId);
+        LOG.debug("REST request to delete note: {}", noteId);
+        noteService.deleteNote(noteId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
@@ -127,12 +113,12 @@ public class NoteController {
      */
     @PutMapping
     public ResponseEntity<NoteDto> updateNote(@Valid @RequestBody NoteDto noteDto) {
-        log.debug("REST request to update note: {}", noteDto);
-        if (Objects.isNull(noteDto.getId())) {
+        LOG.debug("REST request to update note: {}", noteDto);
+        if (noteDto.getId() == null) {
             throw BadRequestException.ofAbsentId();
         }
-        final Note note = noteInternalService.updateNote(noteDto);
-        return ResponseEntity.ok(conversionService.convert(note, NoteDto.class));
+        final NoteDto note = noteService.updateNote(noteDto);
+        return ResponseEntity.ok(note);
     }
 
 }
