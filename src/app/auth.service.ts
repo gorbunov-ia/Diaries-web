@@ -9,7 +9,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:8080/';
+  private baseUrl = 'http://diaries-server-diaries.apps.ca-central-1.starter.openshift-online.com/';
   private authUrl = this.baseUrl + 'api/user/login';
   private logoutUrl = this.baseUrl + 'api/user/logout';
 

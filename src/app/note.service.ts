@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class NoteService {
 
-  private baseUrl = 'http://localhost:8080/';
+  private baseUrl = 'http://diaries-server-diaries.apps.ca-central-1.starter.openshift-online.com/';
   private notesUrl = this.baseUrl + 'api/notes';
 
   constructor(private http: HttpClient) { }
