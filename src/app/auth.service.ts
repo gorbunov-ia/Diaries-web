@@ -3,13 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Credentials } from './credentials';
 import { Observable, of } from 'rxjs';
 import { map, catchError, finalize } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private baseUrl = 'http://diaries-server-diaries.apps.ca-central-1.starter.openshift-online.com/';
+  private baseUrl = environment.baseUrl;
   private authUrl = this.baseUrl + 'api/user/login';
   private logoutUrl = this.baseUrl + 'api/user/logout';
 

@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Note } from './note';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteService {
 
-  private baseUrl = 'http://diaries-server-diaries.apps.ca-central-1.starter.openshift-online.com/';
+  private baseUrl = environment.baseUrl;
   private notesUrl = this.baseUrl + 'api/notes';
 
   constructor(private http: HttpClient) { }
