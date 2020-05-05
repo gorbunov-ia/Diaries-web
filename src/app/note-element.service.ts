@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NoteElement } from './note-element';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteElementService {
 
-  private baseUrl = 'http://localhost:8080/';
+  private baseUrl = environment.baseUrl;
   private notesElementsUrl = this.baseUrl + 'api/notes-elements';
 
   constructor(private http: HttpClient) { }
